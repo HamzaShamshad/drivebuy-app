@@ -5,12 +5,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import ImagePicker from 'react-native-image-picker';
-
-
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { userData } from '../../store/actions/places';
-
-
+import {userDetail} from "../../redux/actions/userDetail"
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
     <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
       <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -20,23 +17,18 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
       </Text>
     </View>
   );
-  
   const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
     const inputStyles = {
-    //   borderRadius: 2,
       borderColor: 'indigo',
-      // padding: 10,
+      borderWidth: 2,
       marginBottom: -3,
       marginTop: 1,
-      height: hp('8%'), // 70% of height device screen
-      width: wp('30%'),
-      
+      height: hp('8%'), 
+      width: wp('50%'),  
     };
-  
     if (formikProps.touched[formikKey] && formikProps.errors[formikKey]) {
       inputStyles.borderColor = 'red';
     }
-  
     return (
       <FieldWrapper label={label} formikKey={formikKey} formikProps={formikProps}>
         <TextInput
@@ -48,52 +40,29 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
       </FieldWrapper>
     );
   };
-  
-  const StyledSwitch = ({ formikKey, formikProps, label, ...rest }) => (
-    <FieldWrapper label={label} formikKey={formikKey} formikProps={formikProps}>
-      <Switch
-        value={formikProps.values[formikKey]}
-        onValueChange={value => {
-          formikProps.setFieldValue(formikKey, value);
-        }}
-        {...rest}
-      />
-    </FieldWrapper>
-  );
-  
   const validationSchema = yup.object().shape({
       name: yup
           .string()
           .label('Username')
           .required(), 
   });
-
 export class Profile extends Component {
     constructor(props){
         super(props);
-
         this.state = {
-            name: '',
-            newName: '',
             avatarSource: null,
-            imageReplaced: false,
             inputFieldHideShow: false,
             photo: null
         }
-
         this.handleUploadPhoto = this.handleUploadPhoto.bind(this);
       }
-
-      componentWillMount(){
-        // console.log("avatarSource is             " , this.props.userObject.user.image_url);
-        let source = {uri: this.props.userObject.user.image_url}
+    componentDidMount(){
+        const {user} = this.props
+        const sourceImage = {uri: this.props.reducer_data[0].user.image_url}
         this.setState({
-          avatarSource: source
+          avatarSource: sourceImage,
         })
-
-        
       }
-
     handleUploadPhoto() {
       const options = {
         quality: 1.0,
@@ -103,10 +72,8 @@ export class Profile extends Component {
           skipBackup: true,
         },
       };
-  
       ImagePicker.showImagePicker(options, response => {
         console.log('Response after getting picture from Camera = ', response);
-  
         if (response.didCancel) {
           console.log('User cancelled photo picker');
         } 
@@ -116,12 +83,8 @@ export class Profile extends Component {
         else if (response.customButton) {
           console.log('User tapped custom button: ', response.customButton);
         } 
-        else {
-          
+        else {    
           let source = {uri: response.uri};
-          // You can also display the image using data:
-          // let source = { uri: 'data:image/jpeg;base64,' + response.data };
-  
           this.setState({
             avatarSource: source,
             photo: response,
@@ -129,10 +92,8 @@ export class Profile extends Component {
         }
       });
     }
-
     createFormData(pic, body) {
-      const data = new FormData();
-      
+      const data = new FormData(); 
       if(pic === null){
         Object.keys(body).forEach(key => {
           data.append(key, body[key]);
@@ -146,66 +107,50 @@ export class Profile extends Component {
           uri:
             Platform.OS === "android" ? pic.uri : pic.uri.replace("file://", "")
         });
-
-
         Object.keys(body).forEach(key => {
           data.append(key, body[key]);
         });
         return data;
       }
     };
-
     async EditUserApiCall(photo , otherParams) {
-      console.log("responce of picture :" , photo );
-      console.log("object is   " , otherParams);
       const url = 'https://space-rental.herokuapp.com/users/edit_user_call';
-
       try {
           const response = await fetch(url, {
-            method: 'POST', // or 'PUT'
-            // body: JSON.stringify(JsonObj), // data can be `string` or {object}!
+            method: 'POST', 
             body: this.createFormData(photo, otherParams),
           });
-
           const json = await response.json();
           console.log("Edited responce is: ", JSON.stringify(json));
-          // alert("Edited successfully!");
-
-          this.props.onUserAction(json);
-          console.log('state saved is  :', this.props.userObject);
-
+          this.props.userDetail(json);
+          console.log('state saved is  :', this.props.reducer_data);
       } 
       catch (error) {
           console.error('Error:', error);
           alert("Upload failed!");
       }
     }
-
     handleSubmit(values) {
-        
       if (values){
-        console.log("values are   " , values);
-        //creating obj with same keys for API call
-
-        let obj = {};
-        obj["id"] = 19;
+        console.log("values are  -------------------------------------------- " , values);
+        const {user} = this.props
+        let obj = {};   
+        obj["id"] =  this.props.reducer_data[0].user.id;
         obj["first_name"] = values.name;
-        obj["last_name"] = "same";
-        
+        obj["last_name"] = this.props.reducer_data[0].user.last_name;   
         this.EditUserApiCall(this.state.photo , obj);
       } 
     }
-
     editUsername(){
         this.setState({              
           inputFieldHideShow: true  
         });
     } 
-
     render() {
+      console.log("IN RENDER", this.props.reducer_data[0].user.first_name)
         return (
             <View style={styles.container}>
-                 
+                <Text style={{marginBottom: 15}}> Your first name: {this.props.reducer_data[0].user.first_name} </Text>
                  <TouchableOpacity onPress={this.handleUploadPhoto.bind(this)}>
                       <View
                         style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
@@ -227,64 +172,45 @@ export class Profile extends Component {
             style={{marginBottom: 20}}>
             {this.state.inputFieldHideShow === true ? (
                 <Formik
-                initialValues={this.state}
-            
+                initialValues={this.state}    
                 onSubmit={this.handleSubmit.bind(this)}
-
                 validationSchema={validationSchema}
                 >
                 {formikProps => (
                     <React.Fragment>
                     <StyledInput style={styles.inputField}
-                        label="Your Name"
+                        label="Your First Name"
                         formikProps={formikProps}
                         formikKey="name"
                         placeholder="  New Username"
-                    
-
                     />
-                
-
                     {formikProps.isSubmitting ? (
                         <ActivityIndicator />
                     ) : (
                     <Button  color="white" style={styles.save}  onPress={formikProps.handleSubmit}>Save</Button>
-                    
-
-
                     )}
-    
-    
                     </React.Fragment>
                 )}
                 </Formik>
             ) : (
                 <View>
-                  <Text style={styles.usernameText}> Your Name</Text>
-                  <Text style={styles.name}>{this.state.name}</Text>
+                  <Text style={styles.usernameText}> Your first name</Text>
+                  <Text style={styles.name}>{this.props.reducer_data[0].user.first_name}</Text>
 
                 <Button  style={styles.editButton} color="white" style={styles.buttonMenu}  onPress={this.editUsername.bind(this)}>Edit</Button>
                 </View>
-
             )}
+          </View>            
           </View>
-             
-            </View>
         )
     }
 }
-
 const styles = StyleSheet.create ({
-
     container: {
-
         flex: 1,
         marginTop: 50,
         alignItems: 'center',
-
-  
   },
-
   avatarContainer: {
     borderColor: '#9B9B9B',
     borderWidth: 1 / PixelRatio.get(),
@@ -292,16 +218,17 @@ const styles = StyleSheet.create ({
     alignItems: 'center',
   },
   usernameText: {
-   fontSize: 15,
+   fontSize: 13,
   },
   inputField:{
     borderBottomColor: "indigo",
     marginBottom: -10,
-    height: hp('8%'), // 70% of height device screen
+    height: hp('8%'), 
     width: wp('40%'),
   },
   editButton:{
-    marginTop: 20,
+    marginTop: 25,
+    marginLeft: -10,
 
   },
     titleText: {
@@ -313,14 +240,15 @@ const styles = StyleSheet.create ({
         marginTop : 30
     },
     name: {
-      fontSize: 20
+      fontSize: 20,
+      marginLeft: 5,
+      marginTop: 15
     },
     buttonMenu:{
       backgroundColor: "indigo",
       marginTop: 10,
       width: wp("40%"),
       marginLeft: 20,
-
     },
     save:{
         backgroundColor: "indigo",
@@ -334,19 +262,12 @@ const styles = StyleSheet.create ({
         height: 150,
       },
   });
-
-
-
 const mapStateToProps = state => {
   return {
-    userObject: state.places.currentUser
+    reducer_data: state.user
   };
 };
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onUserAction: obj => dispatch(userData(obj))
-  };
-};
-
+const mapDispatchToProps = dispatch => bindActionCreators({
+  userDetail: payload => userDetail(payload)
+}, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

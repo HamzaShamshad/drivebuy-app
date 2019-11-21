@@ -23,8 +23,8 @@ export default class DrawerContent extends React.Component {
     goProfile(){
         Actions.profile()
     }
-    goToMaps(){
-        Actions.maps();
+    goMaps(){
+        Actions.maps()
     }
     render(){
         return (
@@ -37,12 +37,12 @@ export default class DrawerContent extends React.Component {
                     <Button color="white" style={styles.buttonMenu} onPress={this.goCart}>Saved</Button>
                     <Button color="white" style={styles.buttonMenu} onPress={this.goAvailible}>Availible</Button>
                     <Button color="white" style={styles.buttonMenu} onPress={this.goProfile}>Profile</Button>
-                    <Button color="white" style={styles.buttonMenu} onPress={this.goToMaps}>Maps</Button>
+                    <Button color="white" style={styles.buttonMenu} onPress={this.goMaps}>Maps</Button>
+
                 </View>
             </View>
             );
-            }
-          
+            }        
 }
 
 const styles = StyleSheet.create({

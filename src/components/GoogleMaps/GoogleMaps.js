@@ -1,3 +1,4 @@
+
 import React, { Component } from "react";
 import { AppRegistry,  StyleSheet, Dimensions, View , Button } from "react-native";
 // import { TabNavigator } from "react-navigation";
@@ -8,8 +9,8 @@ import Geolocation from '@react-native-community/geolocation';
 
 import { connect } from 'react-redux';
 import { userData } from '../../store/actions/places';
-
-let i = 0; 
+import {userDetail} from "../../redux/actions/userDetail"
+let i = 1; 
 
 class GoogleMap extends Component {
 
@@ -93,8 +94,10 @@ class GoogleMap extends Component {
           const json = await response.json();
           // console.log('Results are :', JSON.stringify(json));
           
-          this.props.onUserAction(json);
-          // console.log('state saved is  :', this.props.userObject);
+          this.props.userDetail(json);
+   
+          console.log('state saved is  :', this.props.userObject);
+          console.log('cites  are      ' , this.props.userObject.city )
       } 
       catch (error) {
           console.error('Error in call:', error);
@@ -102,7 +105,7 @@ class GoogleMap extends Component {
     }
 
 
-    setNewLocation(coordinate){
+    async setNewLocation(coordinate){
       //alert("User location changed MAP SHOULDNT MOVE")
       this.setState({
           latitude: coordinate.latitude,
@@ -122,14 +125,46 @@ class GoogleMap extends Component {
       obj["list_num"] = i
 
       // console.log("this.state.mycoords before" , this.state.mycoords);
-      this.MapsApiCall(obj);
+      await this.MapsApiCall(obj);
       // console.log("this.state.mycoords after" , i);
 
       i = i+1;
-      if(i == 10)
-        i=0
+      if(i === 5)
+        i=1
+      console.log('value of i is    ' , i);
+
     }
     
+    showCities = () => {
+      if (i > 2){
+        console.log('i value is' , i )
+        // for(i=0 ; i<this.props.userObject.city.length ; i++ )
+        // {
+          return (
+            <View>
+              <Text  style = {styles.city} >
+                  {this.props.userObject[0].city[0].city}
+              </Text>
+              <Text  style = {styles.city}>
+              {this.props.userObject[0].city[1].city}
+              </Text>
+              <Text  style = {styles.city}>
+              {this.props.userObject[0].city[2].city}
+              </Text>
+              <Text  style = {styles.city}>
+              {this.props.userObject[0].city[3].city}
+              </Text>
+              <Text  style = {styles.city}>
+              {this.props.userObject[0].city[4].city}
+              </Text>
+            </View>
+          )
+        // }
+      }
+
+      
+    }
+
     render() {
       
       return (
@@ -196,9 +231,9 @@ class GoogleMap extends Component {
               Current position:
            </Text> */}
 
-           <Text style = {styles.city}>
-              {this.props.userObject.city}
-          </Text>
+           <View style = {styles.city}>
+              {this.showCities()}
+          </View>
             {/* <Text>
                 {this.state.longitude}
             </Text> */}
@@ -259,13 +294,13 @@ const styles = StyleSheet.create ({
 
 const mapStateToProps = state => {
   return {
-    userObject: state.places.currentUser
+    userObject: state.user
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onUserAction: obj => dispatch(userData(obj))
+    userDetail: obj => dispatch(userDetail(obj))
   };
 };
 

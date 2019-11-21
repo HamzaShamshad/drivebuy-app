@@ -14,9 +14,7 @@ import {
   StyleSheet
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import { Colors } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
 export default class Home extends React.Component {
     ActionOnLocation(){
         Actions.tags()
@@ -51,7 +49,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: 500,
-        height: hp('100%'), // 70% of height device screen
+        height: hp('100%'), 
         width: wp('100%'),
     },
     titleText: {
@@ -62,7 +60,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "indigo"
     },
-
-    
 });
 
