@@ -40,11 +40,12 @@ buck-out
 .watchmanconfig
 
 # Android
-.idea
-.gradle
-local.properties
-*.iml
-/android/
+android/build
+android/app/build
+android/.gradle/
+android/local.properties
+android/*.iml
+
 /rn-debugger-linux-x64
 
 # Node
