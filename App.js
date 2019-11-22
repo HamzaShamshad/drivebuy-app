@@ -10,7 +10,6 @@ import React from 'react';
 import {
   View,
 } from 'react-native';
-import Tags from './src/components/Tags/TagsSearch'
 import RouteCart from "./src/components/cart/RouteCart"
 import configureStore from "./src/redux/store/index"
 import {Provider} from "react-redux"
@@ -20,10 +19,9 @@ export default class App extends React.Component  {
     return (
       <View >
           <View style={{flexDirection: 'column', height: 1000, padding: 10}}>  
-                 
+            {/* Provider connects react app to redux store, here it will also wrap the App component, so we will mount provider as root component */}
             <Provider store={store}> 
               <RouteCart/>
-              {/* <Tags/>*/}
             </Provider>
 
         </View>

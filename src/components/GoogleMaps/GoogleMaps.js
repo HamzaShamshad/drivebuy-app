@@ -8,7 +8,6 @@ import Geolocation from '@react-native-community/geolocation';
 
 
 import { connect } from 'react-redux';
-import { userData } from '../../store/actions/places';
 import {userDetail} from "../../redux/actions/userDetail"
 let i = 1; 
 
@@ -94,10 +93,10 @@ class GoogleMap extends Component {
           const json = await response.json();
           console.log('Results are :', JSON.stringify(json));
           
-          this.props.userDetail(json);
+          // this.props.userDetail(json);
    
-          console.log('state saved is  :', this.props.userObject);
-          console.log('cites  are      ' , this.props.userObject[0].city )
+          // console.log('state saved is  :', this.props.userObject);
+          // console.log('cites  are      ' , this.props.userObject[0].city )
       } 
       catch (error) {
           console.error('Error in call:', error);
