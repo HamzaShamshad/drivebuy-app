@@ -92,12 +92,12 @@ class GoogleMap extends Component {
             }
           });
           const json = await response.json();
-          // console.log('Results are :', JSON.stringify(json));
+          console.log('Results are :', JSON.stringify(json));
           
           this.props.userDetail(json);
    
           console.log('state saved is  :', this.props.userObject);
-          console.log('cites  are      ' , this.props.userObject.city )
+          console.log('cites  are      ' , this.props.userObject[0].city )
       } 
       catch (error) {
           console.error('Error in call:', error);
@@ -131,13 +131,13 @@ class GoogleMap extends Component {
       i = i+1;
       if(i === 5)
         i=1
-      console.log('value of i is    ' , i);
+      console.log('value of i in handler is    ' , i);
 
     }
     
     showCities = () => {
-      if (i > 2){
-        console.log('i value is' , i )
+      console.log('i value in show cities is   ' , i )
+      if (i > 1){
         // for(i=0 ; i<this.props.userObject.city.length ; i++ )
         // {
           return (
@@ -177,7 +177,7 @@ class GoogleMap extends Component {
             showsMyLocationButton={true}
             onPress={ (event) => this.setNewLocation(event.nativeEvent.coordinate) }
 
-            showsUserLocation = {true}
+            // showsUserLocation = {true}
             onUserLocationChange={event => this.setNewLocation(event.nativeEvent.coordinate)}
             
             initialRegion={{

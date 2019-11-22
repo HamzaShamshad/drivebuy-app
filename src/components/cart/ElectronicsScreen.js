@@ -1,31 +1,129 @@
 import React, { Component } from "react";
 import {
     View,
-    StyleSheet
+    StyleSheet,
+    ActivityIndicator,
 } from "react-native";
 import Tags from './Tags'
 import { electronics } from './Data'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import {addToList,removeFromList} from "../../redux/actions/index"
+import {addToList, removeFromList , userDetail} from "../../redux/actions/userDetail"
+
+import Geolocation from '@react-native-community/geolocation';
+
 class ElectronicsScreen extends Component {
     static navigationOptions = {
         headerTitle: 'Available Locations'
     }
+
+    watchID = null;
+    cities = null;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+          latitude: 'unknown',
+          longitude: 'unknown',
+          loading: true
+        };
+
+        Geolocation.getCurrentPosition(
+            (position) => {
+              console.log("current Position is:     " , position);
+            },
+            (error) => alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+        );
+    }
+  
+  
+    componentDidMount = () => {
+        this.watchID = Geolocation.watchPosition( 
+            (position) => {
+                // this.setState({
+                //     latitude: position.coords.latitude,
+                //     longitude: position.coords.longitude,
+                // });
+                console.log("watch Position is:     " , position);
+            },
+            (error) => alert(error.message),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 , distanceFilter: 1}
+        );
+
+        this.setState({
+            loading: true,
+        });
+
+        this.getLocation();
+    }
+
+    componentWillUnmount = () => {
+        console.log("watchButton before:  " , this.watchID);
+        Geolocation.clearWatch(this.watchID);
+        console.log("watchButton after:  " , this.watchID);
+    }
+    
+
+    async MapsApiCall(JsonObj) {
+
+        const url = 'https://space-rental.herokuapp.com/users/location_call';
+      
+        try {
+            const response = await fetch(url, {
+              method: 'POST', // or 'PUT'
+              body: JSON.stringify(JsonObj), // data can be `string` or {object}!
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            const json = await response.json();
+            console.log('Results are :', JSON.stringify(json));
+            
+            this.props.userDetail(json);
+     
+            console.log('state saved is  :', this.props.userObject);
+            console.log('cites  are      ' , this.props.userObject[0].city )
+
+            this.cities = this.props.userObject[0].city;
+        } 
+        catch (error) {
+            console.error('Error in call:', error);
+        }
+    }
+
+    async getLocation(){
+        
+        const obj = {};
+        obj["id"] = 19;
+        obj["list_num"] = 1;
+  
+        // console.log("this.state.mycoords before" , this.state.mycoords);
+        await this.MapsApiCall(obj);
+
+        this.setState({
+            loading: false,
+        });
+        // console.log("this.state.mycoords after" , i);
+    }
+
+
     render() {
+
         return (
+            
             <View style={styles.container}>
-                <Tags products={electronics} onPress={this.props.addItemToCart} />
+
+                {this.state.loading ? 
+                    (<ActivityIndicator />) : (
+                        <Tags products={this.cities} onPress={this.props.addItemToCart} />)}
+
             </View>
         );
     }
 }
-const mapDispatchToProps = dispatch => bindActionCreators({
-    addItemToCart: payload => addToList(payload),
-    removeItemFromCart: payload => removeFromList(payload),
 
-}, dispatch)
-export default connect(null, mapDispatchToProps)(ElectronicsScreen);
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -33,3 +131,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
+
+const mapStateToProps = state => {
+    return {
+      userObject: state.user
+    };
+};
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+    addItemToCart: payload => addToList(payload),
+    removeItemFromCart: payload => removeFromList(payload),
+    userDetail: obj => userDetail(obj)
+
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(ElectronicsScreen);
