@@ -3,15 +3,16 @@ import {
     View,
     StyleSheet,
     ActivityIndicator,
+    Button
 } from "react-native";
 import Tags from './Tags'
 import { electronics } from './Data'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
-import {addToList, removeFromList , userDetail} from "../../redux/actions/userDetail"
+import {userDetail} from "../../redux/actions/userDetail"
+import {addToList,removeFromList} from "../../redux/actions/index"
 
 import Geolocation from '@react-native-community/geolocation';
-
 class ElectronicsScreen extends Component {
     static navigationOptions = {
         headerTitle: 'Available Locations'
@@ -19,6 +20,7 @@ class ElectronicsScreen extends Component {
 
     watchID = null;
     cities = null;
+    i=1;
 
     constructor(props) {
         super(props);
@@ -97,7 +99,7 @@ class ElectronicsScreen extends Component {
         
         const obj = {};
         obj["id"] = 19;
-        obj["list_num"] = 1;
+        obj["list_num"] = this.i;
   
         // console.log("this.state.mycoords before" , this.state.mycoords);
         await this.MapsApiCall(obj);
@@ -108,6 +110,13 @@ class ElectronicsScreen extends Component {
         // console.log("this.state.mycoords after" , i);
     }
 
+    getNewlocs = () => {
+        this.i = this.i + 1;
+        if(this.i == 5)
+            this.i=1;
+        this.getLocation();
+
+    }
 
     render() {
 
@@ -117,7 +126,10 @@ class ElectronicsScreen extends Component {
 
                 {this.state.loading ? 
                     (<ActivityIndicator />) : (
-                        <Tags products={this.cities} onPress={this.props.addItemToCart} />)}
+                        <View>
+                            <Tags chngeLocs={this.getNewlocs} products={this.cities} onPress={this.props.addItemToCart} />
+                        </View>
+                        )}
 
             </View>
         );
