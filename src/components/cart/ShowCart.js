@@ -21,19 +21,23 @@ import {removeFromList} from "../../redux/actions/index"
                 <Text style={styles.titleText}>Locations saved in List</Text>
                 <Text style={styles.secondaryText}>You have {this.props.listItems.length} saved locations </Text>
                 <FlatList
-                data={this.props.listItems}
-                renderItem={({item, index,separators}) => (
-                    <TouchableOpacity                        
-                      onShowUnderlay={separators.highlight}
-                      onHideUnderlay={separators.unhighlight}>
-                      <View style={styles.itemsInFlatList}>
-                        <Text>{item.city}</Text>
-                        <Button color="indigo"onPress={()=>this.deleteItemt(item)} title="Remove"></Button>
-                      </View>
-                    </TouchableOpacity>
+                    data={this.props.listItems}
+                    renderItem={({item, index,separators}) => (
+                        <TouchableOpacity                        
+                            onShowUnderlay={separators.highlight}
+                            onHideUnderlay={separators.unhighlight}>
+                            <View  style={styles.insideContiner}>
+                                <View style={{alignItems: 'center'}}>        
+                                    <Text style={styles.font}>{item.city}</Text>
+                                </View>
+                                <View>
+                                <Button color="indigo"onPress={()=>this.deleteItemt(item)} title="Remove"></Button>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
                     
-                  )}
-                keyExtractor={(x,i)=>i}
+                    )}
+                    keyExtractor={(x,i)=>i}
                 />
             </View>
         );
@@ -52,10 +56,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 400,
-        height: hp('100%'), 
-        width: wp('100%'),
+    },
+    insideContiner: {
+        marginTop:25,
+        width: 150,
     },
     titleText: {
         fontSize: 25,
@@ -64,11 +68,17 @@ const styles = StyleSheet.create({
     secondaryText: {
         fontSize: 20,
         color: "indigo",
-        marginBottom: 50,
-         height: hp('10%'), 
-        width: wp('100%'),
-        textAlign: 'center',
     },
+    font: {
+        fontSize: 20,
+        marginBottom: 2
+    },
+    buttonMenu:{
+        backgroundColor: "indigo",
+        marginTop: 55,
+        
+    },
+    
     itemsInFlatList: {
         marginBottom: 25
     }

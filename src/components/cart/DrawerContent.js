@@ -1,9 +1,13 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet , Dimensions} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import { Button } from 'react-native-paper';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 
+const dimensions = {
+    fullHeight: Dimensions.get('window').height,
+    fullWidth: Dimensions.get('window').width
+}
 export default class DrawerContent extends React.Component {
     goHome(){
         Actions.home()
@@ -30,10 +34,11 @@ export default class DrawerContent extends React.Component {
         return (
             <View style={ styles.container }>
                 <View style={styles.topDrawer}>
-                    <Text style={styles.drawerText}>Location Saving Application</Text>
+                    <Text style={styles.drawerText}>Location Saving</Text>
+                    <Text style={styles.drawerText}>Application</Text>
                 </View>
                 <View style={styles.bottomDrawer}>
-                    <Button color="white" style={styles.buttonMenu} onPress={this.goHome}>Home</Button>
+                    <Button color="white" style={styles.button1st} onPress={this.goHome}>Home</Button>
                     <Button color="white" style={styles.buttonMenu} onPress={this.goCart}>Saved</Button>
                     <Button color="white" style={styles.buttonMenu} onPress={this.goAvailible}>Availible</Button>
                     <Button color="white" style={styles.buttonMenu} onPress={this.goProfile}>Profile</Button>
@@ -49,31 +54,37 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'indigo',
-    },
-    drawerText: {
-        color: '#fff'
-    },
+    }, 
     topDrawer: {
-        flex: 1,
+        flex: 2,
         backgroundColor: 'indigo',
         justifyContent: 'center',
-        alignContent: 'center',
-        alignItems: 'center',
-        width: wp('76%'),
-        
+        alignItems: 'center', 
     },
+    drawerText: {
+        fontSize: dimensions.fullWidth/20,
+        color: '#fff',
+    },
+
     bottomDrawer: {
-        flex: 4,
-        alignContent: 'center',
+        flex: 8,
+        // alignContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
         paddingHorizontal: 15,
         paddingVertical: 10,
+        
+    },
+    button1st: {
+        backgroundColor: "indigo",
+        marginTop: 60,
+        width: "75%",
     },
     buttonMenu:{
         backgroundColor: "indigo",
-        marginBottom: 10,
+        
+        marginTop: 12,
         color: "orange",
-        width: wp('45%'),
+        width: "75%",
     }
 });

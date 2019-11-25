@@ -20,16 +20,23 @@ class Tags extends Component {
             // console.log("fl", fl[0])
             if(fl[0]){
                 return (
-                    <View key={index} style={{ padding: 20 }}>
-                        <Text>{fl.city}</Text>
-                        <Button color="indigo"onPress={() => this.props.removeItemFromCart(fl[0])} title="remove"/>
+                    <View key={index} style={styles.insideContiner}>  
+                        <View style={{alignItems: 'center'}}>        
+                            <Text style={styles.font}>{item.city}</Text>
+                        </View>
+                        <Button color="indigo" onPress={() => this.props.removeItemFromCart(fl[0])} title="remove"/>
                     </View>
                 )
             } else {
                 return (
-                    <View key={index} style={{ padding: 20 }}>
-                        <Text>{item.city}</Text>
-                        <Button color="indigo"onPress={() => this.props.onPress(item)} title="add to list"/>
+                    <View key={index}  style={styles.insideContiner}>
+                        <View style={{alignItems: 'center'}}>
+                            <Text style={styles.font}>{item.city}</Text>
+                        </View>
+                        
+                        <View>
+                            <Button  color="indigo" style={styles.selectButton} onPress={() => this.props.onPress(item)} title="add to list"/>
+                        </View>
                     </View>
                 )
             }
@@ -40,12 +47,53 @@ class Tags extends Component {
             <View style={styles.container}>
                 <Text style={styles.titleText}>{this.props.products.length} locations are availible</Text>
                 {this.renderProducts(this.props.products)}
-                <Button onPress={() => this.props.chngeLocs()} title="Change Locations"/>
+                <View style={styles.changeButton}>
+                    <Button color = "#3c31e3" onPress={() => this.props.chngeLocs()} title="Change Locations"/>
+                </View>
+
 
             </View>
         );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    insideContiner: {
+        // justifyContent: "center",
+        marginTop:25,
+        width: "60%",
+    },
+    titleText: {
+        fontSize: 25,
+        textAlign: "center",
+    },
+    selectButton: {
+        // backgroundColor: '#72e151',
+        // width: 150,
+        // height: 20
+
+    },
+    font: {
+        fontSize: 20,
+        marginBottom: 2
+        // padding: 5 
+
+    },
+    buttonMenu:{
+        backgroundColor: "indigo",
+        marginTop: 55,
+        
+    },
+    changeButton:{
+        marginTop: 30,
+        width: "100%",
+    }
+});
+
 const mapStateToProps = (state) => {
     return {
         listItems: state.carts
@@ -54,16 +102,5 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = dispatch => bindActionCreators({
     removeItemFromCart: payload => removeFromList(payload),
 }, dispatch)
+
 export default connect(mapStateToProps, mapDispatchToProps)(Tags)
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        height: hp('100%'), 
-        width: wp('100%'),
-    },
-    titleText: {
-        fontSize: 25,
-        textAlign: "center",
-    },
-});
