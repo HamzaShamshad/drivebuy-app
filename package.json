@@ -28,6 +28,7 @@
     "react-native-background-geolocation": "^3.3.2",
     "react-native-debugger": "^1.1.0",
     "react-native-dom-parser": "^1.5.3",
+    "react-native-elements": "^1.2.7",
     "react-native-flash-message": "^0.1.15",
     "react-native-form-validator": "^0.3.2",
     "react-native-gesture-handler": "^1.5.0",

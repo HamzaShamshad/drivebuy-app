@@ -9,12 +9,14 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {Button} from "react-native-paper"
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {Actions} from 'react-native-router-flux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import ImagePicker from 'react-native-image-picker';
+import Icon from 'react-native-vector-icons/Feather';
+import { Button } from 'react-native-elements';
+
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 3 }}>
     <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -26,7 +28,7 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
 );
 const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
-    borderWidth: 2,
+    borderBottomWidth: 2,
     borderColor: 'indigo',
     marginBottom: "-3%",
     marginTop: "-2%",
@@ -141,6 +143,7 @@ export default class Signup extends React.Component {
         });
       }
       createFormData(pic, body) {
+      
         const data = new FormData();
         data.append("avatar", {
           name: pic.fileName,
@@ -175,7 +178,6 @@ export default class Signup extends React.Component {
         } 
         catch (error) {
             console.error('Error:', error);
-            alert("Upload failed!");
         }
       }
       handleSubmit(values) { 
@@ -207,32 +209,32 @@ export default class Signup extends React.Component {
                           label="firstname"
                           formikProps={formikProps}
                           formikKey="firstname"
-                          placeholder="  First name"
+                          placeholder="Please enter your first name"
                       />
                         <StyledInput 
                           label="lastname"
                           formikProps={formikProps}
                           formikKey="lastname"
-                          placeholder="  Last name"
+                          placeholder="Please enter your last name"
                       />
                       <StyledInput 
                           label="Email"
                           formikProps={formikProps}
                           formikKey="email"
-                          placeholder="  Email"
+                          placeholder="Please enter your email"
                       />
                       <StyledInput
                           label="Password"
                           formikProps={formikProps}
                           formikKey="password"
-                          placeholder="  Password"
+                          placeholder="Please enter your password"
                           secureTextEntry
                       />
                       <StyledInput 
                           label="Confirm Password"
                           formikProps={formikProps}
                           formikKey="confirmPassword"
-                          placeholder="  Confirm password"
+                          placeholder="Confirm your password"
                           secureTextEntry
            
                       />
@@ -251,7 +253,19 @@ export default class Signup extends React.Component {
                       {formikProps.isSubmitting ? (
                           <ActivityIndicator />
                       ) : (
-                          <Button  color="white" style={styles.buttonMenu}  onPress={formikProps.handleSubmit} >Signup</Button>
+                        <Button
+                          icon={
+                            <Icon
+                              name="user-plus"
+                              size={15}
+                              color="white"
+                            />
+                          }
+                          buttonStyle={styles.buttonMenu}
+                          iconLeft 
+                          title="  Sign up  "
+                          onPress={formikProps.handleSubmit} 
+                      />
                       )}
                       <View style={styles.info}>
                       <Text >Have an account? </Text>

@@ -3,13 +3,14 @@ import {
     View,
     Text,
     StyleSheet,
-    Button,
     TouchableOpacity
 } from "react-native";
 import { connect } from 'react-redux'
 import {removeFromList} from "../../redux/actions/index"
 import { bindActionCreators } from 'redux';
 import { Actions } from 'react-native-router-flux';
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/AntDesign';
 class Tags extends Component {
     
     showInfo = () => {
@@ -21,29 +22,41 @@ class Tags extends Component {
         console.log("this.props.listItems", this.props.listItems)
         return products.map((item, index) => {
             var fl = this.props.listItems.length > 0 && this.props.listItems.filter(itemList => itemList.id == item.id)
-            // console.log("fl", fl[0])
             if(fl[0]){
+                
                 return (
                     <View key={index} style={styles.insideContiner}> 
-                        <TouchableOpacity onPress={this.showInfo}> 
-                            <View style={{alignItems: 'center'}}>        
-                                <Text style={styles.font}>{item.city}</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <Button color="indigo" onPress={() => this.props.removeItemFromCart(fl[0])} title="remove"/>
+                        <Icon
+                            name="minuscircleo"
+                            size={25}
+                            color="red"
+                            onPress={() => this.props.removeItemFromCart(fl[0])}
+                        />
+                        <Text style={{fontSize: 20, marginLeft: 10 , marginRight: "40%"}}>{item.city}</Text>                        
+                        <Icon
+                            name="menuunfold"
+                            size={25}
+                            color="black"
+                            onPress={this.showInfo}                        
+                        />  
                     </View>
                 )
             } else {
                 return (
                     <View key={index}  style={styles.insideContiner}>
-                        <TouchableOpacity onPress={this.showInfo}>
-                            <View style={{alignItems: 'center'}}>
-                                <Text style={styles.font}>{item.city}</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <View>
-                            <Button  color="indigo" style={styles.selectButton} onPress={() => this.props.onPress(item)} title="add to list"/>
-                        </View>
+                         <Icon
+                            name="pluscircleo"
+                            size={25}
+                            color="green"
+                            onPress={() => this.props.onPress(item)}   
+                        />
+                            <Text style={{fontSize: 20, marginLeft: 10, marginRight: "40%"}}>{item.city}</Text>
+                        <Icon
+                            name="menuunfold"
+                            size={25}
+                            color="black"
+                            onPress={this.showInfo}
+                        /> 
                     </View>
                 )
             }
@@ -55,7 +68,7 @@ class Tags extends Component {
                 <Text style={styles.titleText}>{this.props.products.length} locations are availible</Text>
                 {this.renderProducts(this.props.products)}
                 <View style={styles.changeButton}>
-                    <Button color = "#3c31e3" onPress={() => this.props.chngeLocs()} title="Change Locations"/>
+                    <Button buttonStyle={styles.buttonMenu} onPress={() => this.props.chngeLocs()} title="Change Locations"/>
                 </View>
 
 
@@ -70,10 +83,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     insideContiner: {
-        width: "60%",
-        top: 40
+        width: "100%",
+        top: 60,
+        margin: 15,
+        flexDirection: "row",
+        alignContent: "center",
+    
 
     },
+    buttonMenu:{
+        backgroundColor: "indigo",
+      },
     titleText: {
         fontSize: 25,
         textAlign: "center",

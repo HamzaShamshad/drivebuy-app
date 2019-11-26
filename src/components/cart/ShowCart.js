@@ -4,13 +4,12 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
-    Button
 } from "react-native";
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { connect } from "react-redux";
 import { FlatList } from "react-native-gesture-handler";
 import { bindActionCreators } from 'redux';
 import {removeFromList} from "../../redux/actions/index"
+import Icon from 'react-native-vector-icons/AntDesign';
  class ShowCart extends Component {
     deleteItemt(index){
         this.props.removeItemFromCart(index);
@@ -26,12 +25,16 @@ import {removeFromList} from "../../redux/actions/index"
                         <TouchableOpacity                        
                             onShowUnderlay={separators.highlight}
                             onHideUnderlay={separators.unhighlight}>
-                            <View  style={styles.insideContiner}>
-                                <View style={{alignItems: 'center'}}>        
-                                    <Text >{item.city}</Text>
-                                </View>
+                            <View style={styles.insideContiner}>
+                                    <Icon
+                                        name="minuscircleo"
+                                        size={25}
+                                        color="red"
+                                        onPress={()=>this.deleteItemt(item)}
+                                    />      
+                                    <Text style={{fontSize: 20, marginLeft: 10 , marginRight: "30%"}}>{item.city}</Text>
                                 <View>
-                                <Button color="indigo"onPress={()=>this.deleteItemt(item)} title="Remove"></Button>
+                               
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -58,8 +61,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     insideContiner: {
-        marginTop:"10%",
-        width: 150,
+        width: "100%",
+        // top: 60,
+        margin: 15,
+        flexDirection: "row",
+        alignContent: "center",
+    
     },
     titleText: {
         fontSize: 25,
