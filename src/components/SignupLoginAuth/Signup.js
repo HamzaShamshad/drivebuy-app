@@ -91,6 +91,9 @@ export default class Signup extends React.Component {
     test() {
 	  	Actions.test()
     }
+    goSignup(){
+      Actions.signup()
+    }
     goBack() {
       Actions.pop();
     }
@@ -263,7 +266,7 @@ const styles = StyleSheet.create ({
   container: {
     flex: 1,
     alignContent: "center",
-    marginTop: 5
+    marginTop: "2%"
 },
   boldText: {
      fontSize: 30,
