@@ -85,13 +85,13 @@ export default class Info extends Component {
                             <Text style={styles.font}>City: {this.data.name}</Text>
                             <Text style={styles.font}>Province: {this.data.Provice}</Text>
                             <Text style={styles.font}>Country: {this.data.country}</Text>
-                            <Icon.Button
+                            {/* <Icon.Button
                                 name="angle-right"
                                 backgroundColor="#3b5998"
                                 onPress={this.loginWithFacebook}
                             >
                                 Login with Facebook
-                            </Icon.Button>
+                            </Icon.Button> */}
                             <TouchableOpacity  onPress={this.oncall}>
                             
 

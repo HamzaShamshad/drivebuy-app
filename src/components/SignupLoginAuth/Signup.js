@@ -141,18 +141,27 @@ export default class Signup extends React.Component {
         });
       }
       createFormData(pic, body) {
-        const data = new FormData();
-        data.append("avatar", {
-          name: pic.fileName,
-          type: pic.type,
-          uri:
-            Platform.OS === "android" ? pic.uri : pic.uri.replace("file://", "")
-        });
-        Object.keys(body).forEach(key => {
-          data.append(key, body[key]);
-        });
-        return data;
+        const data = new FormData(); 
+        if(pic === null){
+          Object.keys(body).forEach(key => {
+            data.append(key, body[key]);
+          });
+          return data;
+        }
+        else {
+          data.append("avatar", {
+            name: pic.fileName,
+            type: pic.type,
+            uri:
+              Platform.OS === "android" ? pic.uri : pic.uri.replace("file://", "")
+          });
+          Object.keys(body).forEach(key => {
+            data.append(key, body[key]);
+          });
+          return data;
+        }
       };
+
       async SignupApiCall(photo , otherParams) {
         console.log("responce of picture :" , photo );
         console.log("object is   " , otherParams);
@@ -160,7 +169,7 @@ export default class Signup extends React.Component {
         try {
             const response = await fetch(url, {
               method: 'POST', 
-              body: this.createFormData(photo, otherParams),
+              body:  this.createFormData(photo, otherParams),
             });
             const json = await response.json();
             console.log("Signup responce is: ", JSON.stringify(json));
@@ -175,7 +184,6 @@ export default class Signup extends React.Component {
         } 
         catch (error) {
             console.error('Error:', error);
-            alert("Upload failed!");
         }
       }
       handleSubmit(values) { 
