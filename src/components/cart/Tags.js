@@ -3,15 +3,19 @@ import {
     View,
     Text,
     StyleSheet,
-    Button
+    Button,
+    TouchableOpacity
 } from "react-native";
 import { connect } from 'react-redux'
 import {removeFromList} from "../../redux/actions/index"
 import { bindActionCreators } from 'redux';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-
+import { Actions } from 'react-native-router-flux';
 class Tags extends Component {
-  
+    
+    showInfo = () => {
+        Actions.info()
+    }
+
     renderProducts = (products) => {
         console.log("Products", products)
         console.log("this.props.listItems", this.props.listItems)
@@ -20,20 +24,23 @@ class Tags extends Component {
             // console.log("fl", fl[0])
             if(fl[0]){
                 return (
-                    <View key={index} style={styles.insideContiner}>  
-                        <View style={{alignItems: 'center'}}>        
-                            <Text style={styles.font}>{item.city}</Text>
-                        </View>
+                    <View key={index} style={styles.insideContiner}> 
+                        <TouchableOpacity onPress={this.showInfo}> 
+                            <View style={{alignItems: 'center'}}>        
+                                <Text style={styles.font}>{item.city}</Text>
+                            </View>
+                        </TouchableOpacity>
                         <Button color="indigo" onPress={() => this.props.removeItemFromCart(fl[0])} title="remove"/>
                     </View>
                 )
             } else {
                 return (
                     <View key={index}  style={styles.insideContiner}>
-                        <View style={{alignItems: 'center'}}>
-                            <Text style={styles.font}>{item.city}</Text>
-                        </View>
-                        
+                        <TouchableOpacity onPress={this.showInfo}>
+                            <View style={{alignItems: 'center'}}>
+                                <Text style={styles.font}>{item.city}</Text>
+                            </View>
+                        </TouchableOpacity>
                         <View>
                             <Button  color="indigo" style={styles.selectButton} onPress={() => this.props.onPress(item)} title="add to list"/>
                         </View>
