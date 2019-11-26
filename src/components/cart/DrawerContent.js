@@ -67,24 +67,18 @@ const styles = StyleSheet.create({
     },
 
     bottomDrawer: {
-        flex: 8,
-        // alignContent: 'center',
+        flex: 10,
         alignItems: 'center',
-        backgroundColor: '#fff',
-        paddingHorizontal: 15,
-        paddingVertical: 10,
-        
+        backgroundColor: '#fff',    
     },
     button1st: {
         backgroundColor: "indigo",
-        marginTop: 60,
+        marginTop: "6%",
         width: "75%",
     },
     buttonMenu:{
-        backgroundColor: "indigo",
-        
-        marginTop: 12,
-        color: "orange",
+        backgroundColor: "indigo",  
+        marginTop: "6%",
         width: "75%",
     }
 });

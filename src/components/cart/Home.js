@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
         width: wp('100%'),
     },
     titleText: {
-        marginTop: 30,
+        marginTop: "30%",
         fontSize: 25,
     },
     secondaryText: {

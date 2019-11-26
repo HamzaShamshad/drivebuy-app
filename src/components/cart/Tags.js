@@ -63,34 +63,20 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     insideContiner: {
-        // justifyContent: "center",
-        marginTop:25,
         width: "60%",
+        top: 40
+
     },
     titleText: {
         fontSize: 25,
         textAlign: "center",
     },
-    selectButton: {
-        // backgroundColor: '#72e151',
-        // width: 150,
-        // height: 20
-
-    },
-    font: {
-        fontSize: 20,
-        marginBottom: 2
-        // padding: 5 
-
-    },
-    buttonMenu:{
-        backgroundColor: "indigo",
-        marginTop: 55,
-        
-    },
     changeButton:{
-        marginTop: 30,
+        marginTop: "10%",
+        marginBottom: "10%",
         width: "100%",
+        position: "absolute",
+        top: 10
     }
 });
 

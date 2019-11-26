@@ -19,12 +19,12 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   );
   const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
     const inputStyles = {
-      borderColor: 'indigo',
       borderWidth: 2,
-      marginBottom: -3,
-      marginTop: 1,
-      height: hp('8%'), 
-      width: wp('50%'),  
+      borderColor: 'indigo',
+      marginBottom: "-3%",
+      marginTop: "-2%",
+      height: hp('6.4%'),
+      width: wp('40%'),
     };
     if (formikProps.touched[formikKey] && formikProps.errors[formikKey]) {
       inputStyles.borderColor = 'red';
@@ -178,7 +178,7 @@ export class Profile extends Component {
                 >
                 {formikProps => (
                     <React.Fragment>
-                    <StyledInput style={styles.inputField}
+                    <StyledInput 
                         label="Your First Name"
                         formikProps={formikProps}
                         formikKey="name"
@@ -197,7 +197,7 @@ export class Profile extends Component {
                   <Text style={styles.usernameText}> Your first name</Text>
                   <Text style={styles.name}>{this.props.reducer_data[0].user.first_name}</Text>
 
-                <Button  style={styles.editButton} color="white" style={styles.buttonMenu}  onPress={this.editUsername.bind(this)}>Edit</Button>
+                <Button  color="white" style={styles.buttonMenu}  onPress={this.editUsername.bind(this)}>Edit</Button>
                 </View>
             )}
           </View>            
@@ -222,38 +222,32 @@ const styles = StyleSheet.create ({
   },
   inputField:{
     borderBottomColor: "indigo",
-    marginBottom: -10,
+    marginBottom: "-3%",
     height: hp('8%'), 
     width: wp('40%'),
   },
-  editButton:{
-    marginTop: 25,
-    marginLeft: -10,
-
-  },
     titleText: {
         fontSize: 25,
-        marginTop : 30
+        marginTop : "10%"
     },
     smallText: {
         fontSize: 15,
-        marginTop : 30
+        marginTop : "10%"
     },
     name: {
       fontSize: 20,
-      marginLeft: 5,
-      marginTop: 15
+      marginTop: "4%",
     },
     buttonMenu:{
       backgroundColor: "indigo",
-      marginTop: 10,
+      marginTop: "3%",
       width: wp("40%"),
-      marginLeft: 20,
+      marginLeft: 0,
     },
     save:{
         backgroundColor: "indigo",
         width: wp("40%"),
-        marginLeft: 20,
+        marginLeft: "6.7%",
   
       },
     avatar: {
