@@ -17,6 +17,8 @@ import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import DropdownAlert from 'react-native-dropdownalert';
 
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
@@ -31,7 +33,7 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderBottomWidth: 2,
     borderColor: 'indigo',
-    marginBottom: "-3%",
+    marginBottom: "-1.2%",
     marginTop: "-2%",
     height: hp('6.4%'),
     width: wp('84%'),
@@ -65,11 +67,14 @@ const validationSchema = yup.object().shape({
 class Login extends React.Component {
     constructor(props){
       super(props);
+      this.flashMessage()
       this.state = {
         email: '',
         password: '',
-        errorMsg: ""
+        errorMsg: "",
       }
+      
+
     }
     async loginCall(JsonObj) { 
         const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
@@ -81,18 +86,23 @@ class Login extends React.Component {
                 'Content-Type': 'application/json'
               }
             });
-            const json = await response.json();  
+            const json = await response.json();
+            
             if(json.success){
               console.log('Results:', JSON.stringify(json));
               console.log("json login",json.success)
               console.log("ID", json.user.first_name)
               this.props.userDetail(json)
               console.log('state saved is  :', this.props.user);
+              // this.dropDownAlertRef.alertWithType('success', 'Success', "Logged in successfully");
+              // {this.state.loading === false} ? ((<ActivityIndicator/>) : (this.toHome()))
               this.toHome()
-            }else{             
+            }else{
+                  // <ActivityIndicator/>             
                 this.setState({
                   errorMsg: json.message
                 })
+              this.dropDownAlertRef.alertWithType('error', 'Login Failed', this.state.errorMsg);     
             }           
         } 
         catch (error) {
@@ -133,17 +143,33 @@ class Login extends React.Component {
     goProfile(){
       Actions.profile()
     }
+    flashMessage(){         
+      // const {success} = this.props.registeredUser[0]
+      if(this.props.registeredUser[0])
+      {
+       setTimeout(() => {
+           this.dropDownAlertRef.alertWithType(
+             'success',
+             'Congratulation',
+              "Registered",
+           );
+         }, 1000);
+      }
+   }
+   
     render(){  
         return(
-            <SafeAreaView style={styles.container}>           
+            <SafeAreaView style={[styles.loginPage, styles.container]}>        
                 <Formik
                 initialValues={this.state}      
                 onSubmit={this.handleSubmit.bind(this)}
                 validationSchema={validationSchema}
+                
                 >
                 {formikProps => (
-                  <React.Fragment>       
-                    <Text style={styles.error}>{this.state.errorMsg}</Text>
+                  <React.Fragment>    
+                    {/* <DropdownAlert imageStyle={{ padding: 8, width: 10, height: 10, alignSelf: 'center' }}containerStyle={{marginBottom: 30,  backgroundColor: 'transparent'}} messageStyle={{ fontSize: 10, textAlign: 'left', fontWeight: 'bold', color: 'white', backgroundColor: 'transparent', marginBottom: 30}} ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/> */}
+                    
                     <StyledInput 
                         label="Email"
                         formikProps={formikProps}
@@ -168,10 +194,11 @@ class Login extends React.Component {
                           color="white"
                         />
                       }
+                      
                     buttonStyle={styles.buttonMenu}
                     iconLeft 
                     title="  Login  "
-                    onPress={formikProps.handleSubmit} 
+                    onPress={formikProps.handleSubmit}  
                   />
                   )}
                 
@@ -183,13 +210,16 @@ class Login extends React.Component {
                   </React.Fragment>
                 )}
                 </Formik>
+                <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
+
             </SafeAreaView>
         )
     }
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-     user: state.user
+     user: state.user,
+     registeredUser: state.register
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -228,5 +258,8 @@ const styles = StyleSheet.create ({
   error:{
     color: "red",
     marginLeft: 20
+  },
+  loginPage:{
+    top: 50
   }
 });

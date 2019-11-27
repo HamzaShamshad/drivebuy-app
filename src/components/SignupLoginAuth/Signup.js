@@ -16,7 +16,10 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import { Button } from 'react-native-elements';
-
+import DropdownAlert from 'react-native-dropdownalert';
+import {registeredUser} from "../../redux/actions/registered"
+import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 3 }}>
     <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -30,7 +33,7 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderBottomWidth: 2,
     borderColor: 'indigo',
-    marginBottom: "-3%",
+    marginBottom: "-1.2%",
     marginTop: "-2%",
     height: hp('6.4%'),
     width: wp('84%'),
@@ -76,7 +79,7 @@ const validationSchema = yup.object().shape({
       return this.parent.password === value;
     })
 });
-export default class Signup extends React.Component {
+class Signup extends React.Component {
     constructor(props){
       super(props);
       this.state = {
@@ -176,13 +179,16 @@ export default class Signup extends React.Component {
             });
             const json = await response.json();
             console.log("Signup responce is: ", JSON.stringify(json));
+            this.props.registeredUser(json)
             if(!json.success){
               console.log("THERE IS ERROR")
               this.setState({
                 errorMsg: `email ${json.user.email}`,
               })
+              this.dropDownAlertRef.alertWithType('error', 'Error', this.state.errorMsg);
             }else{
               this.goLogin()
+              
             }
         } 
         catch (error) {
@@ -213,7 +219,7 @@ export default class Signup extends React.Component {
                   >
                   {formikProps => (
                       <React.Fragment>
-                      <Text style={styles.error}>{this.state.errorMsg}</Text>
+                      <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
                       <StyledInput 
                           label="firstname"
                           formikProps={formikProps}
@@ -249,7 +255,7 @@ export default class Signup extends React.Component {
                       />
                       <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
                             <View
-                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 20, marginTop: "-4%"}]}>
+                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 30, marginTop: "-1%"}]}>
                               {this.state.avatarSource === null ? (
                                   <View>
                                   <Text style={{marginLeft: "7%"}}>Select Photo</Text>       
@@ -327,3 +333,14 @@ error:{
   marginLeft: 20
 }
 });
+
+
+const mapStateToProps = state => {
+  return {
+     registerUser: state.register
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  registeredUser: payload => registeredUser(payload),
+}, dispatch)
+export default connect(mapStateToProps, mapDispatchToProps)(Signup)

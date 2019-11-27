@@ -14,18 +14,41 @@ import {
   StyleSheet
 } from 'react-native';
 import {Actions} from 'react-native-router-flux';
+import DropdownAlert from 'react-native-dropdownalert';
+import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-export default class Home extends React.Component {
+class Home extends React.Component {
+    constructor(props){
+        super(props);
+        this.flashMessage()
+    }
     ActionOnLocation(){
         Actions.tags()
     }
     ActionOnCart(){
         Actions.show()
     }
+    flashMessage(){
+       const {message} = this.props.reducer_data[0]
+       if(message)
+       {
+        setTimeout(() => {
+            this.dropDownAlertRef.alertWithType(
+              'success',
+              'Congratulation',
+               message,
+            );
+          }, 1000);
+       }
+    }
     render(){
+        console.log("HOME PRESSED",  this.props.reducer_data[0].success)
+
         return(
             <View style={styles.container}>
             
+                {/* <Button title="press" onPress={this.simple()}></Button> */}
                 <TouchableOpacity 
                     onPress={this.ActionOnLocation}>
                     <Text style={styles.secondaryText} >
@@ -38,7 +61,7 @@ export default class Home extends React.Component {
                         Your Saved Locations
                     </Text>
                 </TouchableOpacity>
-
+                <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
             </View>
         )
     }
@@ -62,3 +85,11 @@ const styles = StyleSheet.create({
     },
 });
 
+const mapStateToProps = state => {
+    return {
+      reducer_data: state.user
+    };
+  };
+
+
+  export default connect(mapStateToProps, null)(Home);
