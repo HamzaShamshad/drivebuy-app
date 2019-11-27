@@ -28,7 +28,7 @@ import {removeFromList} from "../../redux/actions/index"
                             onHideUnderlay={separators.unhighlight}>
                             <View  style={styles.insideContiner}>
                                 <View style={{alignItems: 'center'}}>        
-                                    <Text style={styles.font}>{item.city}</Text>
+                                    <Text >{item.city}</Text>
                                 </View>
                                 <View>
                                 <Button color="indigo"onPress={()=>this.deleteItemt(item)} title="Remove"></Button>
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     insideContiner: {
-        marginTop:25,
+        marginTop:"10%",
         width: 150,
     },
     titleText: {
@@ -69,17 +69,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "indigo",
     },
-    font: {
-        fontSize: 20,
-        marginBottom: 2
-    },
-    buttonMenu:{
-        backgroundColor: "indigo",
-        marginTop: 55,
-        
-    },
-    
     itemsInFlatList: {
-        marginBottom: 25
+        marginBottom: "30"
     }
 });

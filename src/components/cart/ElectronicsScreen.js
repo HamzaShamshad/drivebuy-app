@@ -156,5 +156,5 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     userDetail: obj => userDetail(obj)
 
 }, dispatch)
-
+25
 export default connect(mapStateToProps, mapDispatchToProps)(ElectronicsScreen);

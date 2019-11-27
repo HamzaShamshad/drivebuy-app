@@ -28,9 +28,9 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderWidth: 2,
     borderColor: 'indigo',
-    marginBottom: -5,
-    marginTop: -1,
-    height: hp('7%'),
+    marginBottom: "-3%",
+    marginTop: "-2%",
+    height: hp('6.4%'),
     width: wp('84%'),
   };
   if (formikProps.touched[formikKey] && formikProps.errors[formikKey]) {
@@ -246,10 +246,10 @@ export default class Signup extends React.Component {
                       />
                       <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
                             <View
-                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
+                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 20, marginTop: "-4%"}]}>
                               {this.state.avatarSource === null ? (
                                   <View>
-                                  <Text style={{marginLeft: 15}}>Select Photo</Text>       
+                                  <Text style={{marginLeft: "7%"}}>Select Photo</Text>       
                                   </View>
                               ) : (
                                 <Image style={styles.avatar} source={this.state.avatarSource} />
@@ -261,8 +261,10 @@ export default class Signup extends React.Component {
                       ) : (
                           <Button  color="white" style={styles.buttonMenu}  onPress={formikProps.handleSubmit} >Signup</Button>
                       )}
-                      <Text style={styles.info}>Have an account?</Text>
-                      <TouchableOpacity style={styles.info} onPress={this.goLogin}><Text>Click here to Login</Text></TouchableOpacity>
+                      <View style={styles.info}>
+                      <Text >Have an account? </Text>
+                      <TouchableOpacity onPress={this.goLogin}><Text>Login</Text></TouchableOpacity>
+                      </View>
                       </React.Fragment>
                   )}
                 </Formik>
@@ -274,7 +276,7 @@ const styles = StyleSheet.create ({
   container: {
     flex: 1,
     alignContent: "center",
-    marginTop: "2%"
+    marginTop: "-1%"
 },
   boldText: {
      fontSize: 30,
@@ -293,12 +295,15 @@ const styles = StyleSheet.create ({
    fontSize: hp('5%') 
  },
  info: {
-  marginLeft: 20,
-  marginTop: 5
+  marginLeft: "6%",
+  marginTop: "-3%",
+  flexDirection: "row",
+  alignContent: "flex-start"
 },
 buttonMenu:{
   backgroundColor: "indigo",
-  marginBottom: 10,
+  marginBottom: "2%",
+  marginTop: "-4%",
   width: wp("40%"),
   marginLeft: 20,
 },

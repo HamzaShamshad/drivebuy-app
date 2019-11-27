@@ -29,9 +29,9 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderWidth: 2,
     borderColor: 'indigo',
-    marginBottom: -3,
-    marginTop: 1,
-    height: hp('8%'), 
+    marginBottom: "-3%",
+    marginTop: "-2%",
+    height: hp('6.4%'),
     width: wp('84%'),
   };
   if (formikProps.touched[formikKey] && formikProps.errors[formikKey]) {
@@ -160,8 +160,11 @@ class Login extends React.Component {
                   ) : (
                     <Button  color="white" style={styles.buttonMenu}  onPress={formikProps.handleSubmit} >Login</Button>
                   )}
-                  <Text style={styles.info}>Don't have an account?</Text>
-                  <TouchableOpacity style={styles.info} onPress={this.signup}><Text>Click here to Signup</Text></TouchableOpacity>
+                
+                <View   style={styles.info} >
+                <Text >Don't have an account? </Text>
+                  <TouchableOpacity onPress={this.signup}><Text>Signup</Text></TouchableOpacity>
+                </View>
                   
                   </React.Fragment>
                 )}
@@ -182,7 +185,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
-    marginTop: 10
+    marginTop: "5%"
   },
   boldText: {
      fontSize: 30,
@@ -197,8 +200,10 @@ const styles = StyleSheet.create ({
     fontSize: hp('5%') 
   },
   info: {
-    marginLeft: 20,
-    marginTop: 5
+    marginLeft: "6%",
+    marginTop: "-3%",
+    flexDirection: "row",
+    alignContent: "flex-start"
   }, 
   buttonMenu:{
     backgroundColor: "indigo",
