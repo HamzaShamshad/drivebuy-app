@@ -4,13 +4,10 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    Button,
     TouchableOpacity
 } from "react-native";
-
+import Icon from 'react-native-vector-icons/Zocial';
 import call from 'react-native-phone-call'
-import Icon from 'react-native-vector-icons/FontAwesome';
-
 const args = {
     number: null, // String value with the number to call
     prompt: false // Optional boolean property. Determines if the user should be prompt prior to the call 
@@ -80,23 +77,22 @@ export default class Info extends Component {
 
                 {this.state.loading ? 
                     (<ActivityIndicator />) : (
-                            <View style={styles.insideContainer}>
-                            <Text style={styles.font}>Place: {this.data.place}</Text>
-                            <Text style={styles.font}>City: {this.data.name}</Text>
-                            <Text style={styles.font}>Province: {this.data.Provice}</Text>
-                            <Text style={styles.font}>Country: {this.data.country}</Text>
-                            {/* <Icon.Button
-                                name="angle-right"
-                                backgroundColor="#3b5998"
-                                onPress={this.loginWithFacebook}
-                            >
-                                Login with Facebook
-                            </Icon.Button> */}
-                            <TouchableOpacity  onPress={this.oncall}>
-                            
 
-                                <Text style={styles.font}>Phone: {this.data.phone}</Text>
-                            </TouchableOpacity>
+                            <View style={styles.itemParent}>
+                                <Text style={styles.items}>Place: {this.data.place}</Text>
+                                <Text style={styles.items}>City: {this.data.name}</Text>
+                                <Text style={styles.items}>Province: {this.data.Provice}</Text>
+                                <Text style={styles.items}>Country: {this.data.country}</Text>
+                                
+                                <View style={styles.call}>
+                                    <Icon
+                                        name="call"
+                                        size={35}
+                                        color="green"
+                                        onPress={this.oncall}
+                                    />  
+                                    <Text style={styles.items}>{this.data.phone}</Text>
+                                </View>
                             </View>
                         )}
                         
@@ -109,13 +105,18 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: "center"
+        justifyContent: "center",
+        bottom: 10
     },
-    insideContainer: {
-        marginBottom: 400,
+    items: {
+        fontSize: 30,
     },
-    font: {
-        fontSize: 20,
-        color: "red"
+    itemParent:{
+        margin: 30
+    },
+    call: {
+        alignContent: "space-around",
+        flexDirection: "row"
     }
+   
 });

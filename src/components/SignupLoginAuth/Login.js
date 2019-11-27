@@ -12,10 +12,12 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import {Actions} from 'react-native-router-flux';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { Button } from 'react-native-paper';
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
+import { Button } from 'react-native-elements';
+import Icon from 'react-native-vector-icons/AntDesign';
+
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
     <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -27,7 +29,7 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
 );
 const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
-    borderWidth: 2,
+    borderBottomWidth: 2,
     borderColor: 'indigo',
     marginBottom: "-3%",
     marginTop: "-2%",
@@ -146,19 +148,31 @@ class Login extends React.Component {
                         label="Email"
                         formikProps={formikProps}
                         formikKey="email"
-                        placeholder="  Email"
+                        placeholder="Please enter your email"
                     />
                   <StyledInput 
                       label="Password"
                       formikProps={formikProps}
                       formikKey="password"
-                      placeholder="  Password"
+                      placeholder="Please enter your Password"
                       secureTextEntry
                   />          
                   {formikProps.isSubmitting ? (
                       <ActivityIndicator />
                   ) : (
-                    <Button  color="white" style={styles.buttonMenu}  onPress={formikProps.handleSubmit} >Login</Button>
+                    <Button
+                      icon={
+                        <Icon
+                          name="login"
+                          size={15}
+                          color="white"
+                        />
+                      }
+                    buttonStyle={styles.buttonMenu}
+                    iconLeft 
+                    title="  Login  "
+                    onPress={formikProps.handleSubmit} 
+                  />
                   )}
                 
                 <View   style={styles.info} >

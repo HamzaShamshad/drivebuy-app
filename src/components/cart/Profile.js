@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
-import {Button } from "react-native-paper"
 import { Text, View, AsyncStorage, StyleSheet, Image,TextInput, ActivityIndicator, Alert,TouchableOpacity, PixelRatio} from 'react-native'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import { Button } from 'react-native-elements';
 import ImagePicker from 'react-native-image-picker';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {userDetail} from "../../redux/actions/userDetail"
+import Icon from 'react-native-vector-icons/Feather';
+
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
     <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
       <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -19,12 +21,13 @@ const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   );
   const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
     const inputStyles = {
-      borderWidth: 2,
+      borderBottomWidth: 2,
       borderColor: 'indigo',
       marginBottom: "-3%",
       marginTop: "-2%",
+      marginLeft: "5%",
       height: hp('6.4%'),
-      width: wp('40%'),
+      width: wp('50%'),
     };
     if (formikProps.touched[formikKey] && formikProps.errors[formikKey]) {
       inputStyles.borderColor = 'red';
@@ -167,8 +170,9 @@ export class Profile extends Component {
                         )}
                       </View>
                   </TouchableOpacity>
+                  <Text style={styles.usernameText}>{this.props.reducer_data[0].user.first_name}</Text>
 
-        <View
+            <View
             style={{marginBottom: 20}}>
             {this.state.inputFieldHideShow === true ? (
                 <Formik
@@ -179,26 +183,36 @@ export class Profile extends Component {
                 {formikProps => (
                     <React.Fragment>
                     <StyledInput 
-                        label="Your First Name"
                         formikProps={formikProps}
                         formikKey="name"
-                        placeholder="  New Username"
+                        placeholder="New Username"
                     />
                     {formikProps.isSubmitting ? (
                         <ActivityIndicator />
                     ) : (
-                    <Button  color="white" style={styles.save}  onPress={formikProps.handleSubmit}>Save</Button>
+                    <Button  
+                    icon={
+                      <Icon
+                        name="save"
+                        size={20}
+                        color="white"
+                      />
+                    }
+                    title="  Save your name"
+                    buttonStyle={styles.save}  
+                    onPress={formikProps.handleSubmit}
+                    />
                     )}
                     </React.Fragment>
                 )}
                 </Formik>
             ) : (
-                <View>
-                  <Text style={styles.usernameText}> Your first name</Text>
-                  <Text style={styles.name}>{this.props.reducer_data[0].user.first_name}</Text>
-
-                <Button  color="white" style={styles.buttonMenu}  onPress={this.editUsername.bind(this)}>Edit</Button>
-                </View>
+                  <Icon
+                    name="edit"
+                    size={25}
+                    color="green"
+                    onPress={this.editUsername.bind(this)}
+                  />
             )}
           </View>            
           </View>
@@ -246,8 +260,9 @@ const styles = StyleSheet.create ({
     },
     save:{
         backgroundColor: "indigo",
-        width: wp("40%"),
-        marginLeft: "6.7%",
+        width: wp("50%"),
+        marginLeft: "15%",
+        marginTop: 20
   
       },
     avatar: {
