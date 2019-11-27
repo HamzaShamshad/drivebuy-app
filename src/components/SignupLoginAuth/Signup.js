@@ -143,10 +143,11 @@ export default class Signup extends React.Component {
       createFormData(pic, body) {
         const data = new FormData(); 
         if(pic === null){
-          Object.keys(body).forEach(key => {
-            data.append(key, body[key]);
+          data.append("avatar", {
+            name: "general",
+            type: "avatar",
+            uri: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
           });
-          return data;
         }
         else {
           data.append("avatar", {
@@ -155,11 +156,11 @@ export default class Signup extends React.Component {
             uri:
               Platform.OS === "android" ? pic.uri : pic.uri.replace("file://", "")
           });
-          Object.keys(body).forEach(key => {
-            data.append(key, body[key]);
-          });
-          return data;
         }
+        Object.keys(body).forEach(key => {
+          data.append(key, body[key]);
+        });
+        return data;
       };
 
       async SignupApiCall(photo , otherParams) {
