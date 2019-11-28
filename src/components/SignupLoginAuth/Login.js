@@ -15,6 +15,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
+import {isLoading} from "../../redux/actions/registered"
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
@@ -77,6 +80,8 @@ class Login extends React.Component {
 
     }
     async loginCall(JsonObj) { 
+        
+
         const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
         try {
             const response = await fetch(url, {
@@ -87,28 +92,33 @@ class Login extends React.Component {
               }
             });
             const json = await response.json();
-            
+           
+              this.props.loadingAction(false)
+           
+           
             if(json.success){
               console.log('Results:', JSON.stringify(json));
               console.log("json login",json.success)
               console.log("ID", json.user.first_name)
               this.props.userDetail(json)
               console.log('state saved is  :', this.props.user);
-              // this.dropDownAlertRef.alertWithType('success', 'Success', "Logged in successfully");
-              // {this.state.loading === false} ? ((<ActivityIndicator/>) : (this.toHome()))
+              
               this.toHome()
+              this.props.loadingAction(true)
+
             }else{
-                  // <ActivityIndicator/>             
                 this.setState({
-                  errorMsg: json.message
+                  errorMsg: json.message,
                 })
               this.dropDownAlertRef.alertWithType('error', 'Login Failed', this.state.errorMsg);     
-            }           
+            }
+               
         } 
         catch (error) {
             console.error('Error:', error);
         }  
   }  
+
     async handleSubmit(values) {
       if (values){
         var obj = {};    
@@ -116,7 +126,11 @@ class Login extends React.Component {
         console.log("PASSWORD: ", values.password)
         obj["email"] = values.email;
         obj["password"] = values.password; 
-        this.loginCall(obj);     
+        this.props.loadingAction(false)
+        // console.log("BEFORE CALL", this.props.register.loading)
+        this.loginCall(obj); 
+        // console.log("AFTER CALL", this.props.register.loading)
+        this.props.loadingAction(false)
       }
     }
     toHome(){
@@ -151,15 +165,18 @@ class Login extends React.Component {
            this.dropDownAlertRef.alertWithType(
              'success',
              'Congratulation',
-              "Registered",
+              "Registered Successfully",
            );
          }, 1000);
       }
    }
    
-    render(){  
-        return(
-            <SafeAreaView style={[styles.loginPage, styles.container]}>        
+    render(){
+      console.log("LOADING IN LOGIN :: ", this.props.loading);
+      return(
+          
+            <SafeAreaView style={[styles.loginPage, styles.container]}>      
+            {/* {this.props.loading ? (<Text>NO</Text>): <ActivityIndicator/>}   */}
                 <Formik
                 initialValues={this.state}      
                 onSubmit={this.handleSubmit.bind(this)}
@@ -170,22 +187,33 @@ class Login extends React.Component {
                   <React.Fragment>    
                     {/* <DropdownAlert imageStyle={{ padding: 8, width: 10, height: 10, alignSelf: 'center' }}containerStyle={{marginBottom: 30,  backgroundColor: 'transparent'}} messageStyle={{ fontSize: 10, textAlign: 'left', fontWeight: 'bold', color: 'white', backgroundColor: 'transparent', marginBottom: 30}} ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/> */}
                     
-                    <StyledInput 
-                        label="Email"
-                        formikProps={formikProps}
-                        formikKey="email"
-                        placeholder="Please enter your email"
-                    />
-                  <StyledInput 
-                      label="Password"
-                      formikProps={formikProps}
-                      formikKey="password"
-                      placeholder="Please enter your Password"
-                      secureTextEntry
-                  />          
-                  {formikProps.isSubmitting ? (
-                      <ActivityIndicator />
+                   
+                  {this.props.loading? (
+                     <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+                        <Spinner
+                            visible={this.props.loading}
+                            // textContent={'Logging in, Please wait'}
+                        />
+                        {/* <ActivityIndicator animating={this.props.loading} color="indigo" size="large" /> */}
+                    </View>   
                   ) : (
+                        null
+                  )}
+                
+               
+                            <StyledInput 
+                          label="Email"
+                          formikProps={formikProps}
+                          formikKey="email"
+                          placeholder="Please enter your email"
+                      />
+                    <StyledInput 
+                        label="Password"
+                        formikProps={formikProps}
+                        formikKey="password"
+                        placeholder="Please enter your Password"
+                        secureTextEntry
+                    />          
                     <Button
                       icon={
                         <Icon
@@ -199,14 +227,12 @@ class Login extends React.Component {
                     iconLeft 
                     title="  Login  "
                     onPress={formikProps.handleSubmit}  
+
                   />
-                  )}
-                
-                <View   style={styles.info} >
+                   <View   style={styles.info} >
                 <Text >Don't have an account? </Text>
                   <TouchableOpacity onPress={this.signup}><Text>Signup</Text></TouchableOpacity>
                 </View>
-                  
                   </React.Fragment>
                 )}
                 </Formik>
@@ -219,11 +245,13 @@ class Login extends React.Component {
 const mapStateToProps = state => {
   return {
      user: state.user,
-     registeredUser: state.register
+     registeredUser: state.register,
+     loading: state.register.loading
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
   userDetail: payload => userDetail(payload),
+  loadingAction: payload => isLoading(payload)
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
 const styles = StyleSheet.create ({

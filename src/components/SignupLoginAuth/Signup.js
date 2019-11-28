@@ -20,6 +20,8 @@ import DropdownAlert from 'react-native-dropdownalert';
 import {registeredUser} from "../../redux/actions/registered"
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
+import {isLoading} from "../../redux/actions/registered"
+import Spinner from 'react-native-loading-spinner-overlay';
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 3 }}>
     <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -90,7 +92,7 @@ class Signup extends React.Component {
           confirmPassword: '',
           avatarSource: null,
           photo: null,
-          errorMsg: ''
+          errorMsg: '',
       }
     }
     test() {
@@ -178,6 +180,9 @@ class Signup extends React.Component {
               body:  this.createFormData(photo, otherParams),
             });
             const json = await response.json();
+
+            this.props.loadingAction(true)
+
             console.log("Signup responce is: ", JSON.stringify(json));
             this.props.registeredUser(json)
             if(!json.success){
@@ -187,14 +192,19 @@ class Signup extends React.Component {
               })
               this.dropDownAlertRef.alertWithType('error', 'Error', this.state.errorMsg);
             }else{
-              this.goLogin()
               
+
+                this.goLogin()
+                this.props.loadingAction(true)
+
             }
         } 
         catch (error) {
             console.error('Error:', error);
         }
       }
+        
+      
       handleSubmit(values) { 
         if (values){
               let obj = {};
@@ -203,15 +213,21 @@ class Signup extends React.Component {
               obj["email"] = values.email;
               obj["password"] = values.password;
               obj["password_confirmation"]= values.confirmPassword;
+              this.props.loadingAction(false)
               this.SignupApiCall(this.state.photo , obj);
+              this.props.loadingAction(false)
+              
         } 
       }
       goLogin(){
         Actions.login()
       }
     render(){
+        console.log("LOADING IN SIGNUP", this.props.loading)
         return(
-            <SafeAreaView style={styles.container}>       
+            <SafeAreaView style={styles.container}>  
+            {/* {this.state.isLoading ? (<ActivityIndicator/>) : (this.goLogin())} */}
+            {/* <Button onPress={this.loading()}/> */}
                 <Formik 
                   initialValues={this.state}
                   onSubmit={this.handleSubmit.bind(this)}
@@ -265,10 +281,19 @@ class Signup extends React.Component {
                               )}
                             </View>
                         </TouchableOpacity>
-                      {formikProps.isSubmitting ? (
-                          <ActivityIndicator />
+                      {this.props.loading ? (
+                          
+                          <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+                            {/* <Spinner
+                              visible={this.props.loading}
+                              textContent={'Loading, Please wait'}
+                        /> */}
+                        <ActivityIndicator/>
+                          </View>  
                       ) : (
-                        <Button
+                       null
+                      )}
+                       <Button
                           icon={
                             <Icon
                               name="user-plus"
@@ -281,7 +306,6 @@ class Signup extends React.Component {
                           title="  Sign up  "
                           onPress={formikProps.handleSubmit} 
                       />
-                      )}
                       <View style={styles.info}>
                       <Text >Have an account? </Text>
                       <TouchableOpacity onPress={this.goLogin}><Text>Login</Text></TouchableOpacity>
@@ -334,13 +358,16 @@ error:{
 }
 });
 
-
 const mapStateToProps = state => {
   return {
-     registerUser: state.register
+     registerUser: state.register,
+     loading: state.register.loading
+
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
   registeredUser: payload => registeredUser(payload),
+  loadingAction: payload => isLoading(payload)
+
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(Signup)

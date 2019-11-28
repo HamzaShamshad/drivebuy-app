@@ -43,12 +43,9 @@ class Home extends React.Component {
        }
     }
     render(){
-        console.log("HOME PRESSED",  this.props.reducer_data[0].success)
 
         return(
             <View style={styles.container}>
-            
-                {/* <Button title="press" onPress={this.simple()}></Button> */}
                 <TouchableOpacity 
                     onPress={this.ActionOnLocation}>
                     <Text style={styles.secondaryText} >

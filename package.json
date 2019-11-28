@@ -34,6 +34,7 @@
     "react-native-form-validator": "^0.3.2",
     "react-native-gesture-handler": "^1.5.0",
     "react-native-image-picker": "^1.1.0",
+    "react-native-loading-spinner-overlay": "^1.0.1",
     "react-native-maps": "git+https://git@github.com/react-native-community/react-native-maps.git",
     "react-native-paper": "^3.2.1",
     "react-native-phone-call": "^1.0.9",
@@ -50,6 +51,7 @@
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "save": "^2.4.0",
     "tcomb-form-native": "^0.6.20",
     "yup": "^0.27.0"
   },
