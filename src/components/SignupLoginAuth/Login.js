@@ -15,8 +15,10 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
+import {saveLocation} from "../../redux/actions/userLoc"
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Geolocation from '@react-native-community/geolocation';
 
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
@@ -71,44 +73,19 @@ class Login extends React.Component {
         errorMsg: ""
       }
     }
-    async loginCall(JsonObj) { 
-        const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
-        try {
-            const response = await fetch(url, {
-              method: 'POST', 
-              body: JSON.stringify(JsonObj), 
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-            const json = await response.json();  
-            if(json.success){
-              console.log('Results:', JSON.stringify(json));
-              console.log("json login",json.success)
-              console.log("ID", json.user.first_name)
-              this.props.userDetail(json)
-              console.log('state saved is  :', this.props.user);
-              this.toHome()
-            }else{             
-                this.setState({
-                  errorMsg: json.message
-                })
-            }           
-        } 
-        catch (error) {
-            console.error('Error:', error);
-        }  
-  }  
-    async handleSubmit(values) {
-      if (values){
-        var obj = {};    
-        console.log("EMAIL: ", values.email)
-        console.log("PASSWORD: ", values.password)
-        obj["email"] = values.email;
-        obj["password"] = values.password; 
-        this.loginCall(obj);     
-      }
+
+    componentDidMount = () => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log("current position is  " , position);
+          this.props.saveLocation(position)
+          console.log("saved position is  " , this.props.loc);
+        },
+        (error) => alert(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+      );
     }
+    
     toHome(){
       Actions.home()
     }
@@ -133,6 +110,46 @@ class Login extends React.Component {
     goProfile(){
       Actions.profile()
     }
+    
+    async loginCall(JsonObj) { 
+        const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
+        try {
+            const response = await fetch(url, {
+              method: 'POST', 
+              body: JSON.stringify(JsonObj), 
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            const json = await response.json();  
+            if(json.success){
+              console.log('Results:', JSON.stringify(json));
+
+              this.props.userDetail(json);
+              console.log('state saved is  :', this.props.user);
+              this.toHome()
+            }else{             
+                this.setState({
+                  errorMsg: json.message
+                })
+            }           
+        } 
+        catch (error) {
+            console.error('Error:', error);
+        }  
+    }  
+
+    async handleSubmit(values) {
+      if (values){
+        var obj = {};    
+        console.log("EMAIL: ", values.email)
+        console.log("PASSWORD: ", values.password)
+        obj["email"] = values.email;
+        obj["password"] = values.password; 
+        this.loginCall(obj);     
+      }
+    }
+    
     render(){  
         return(
             <SafeAreaView style={styles.container}>           
@@ -187,15 +204,7 @@ class Login extends React.Component {
         )
     }
 }
-const mapStateToProps = (state) => {
-  return {
-     user: state.user
-  }
-}
-const mapDispatchToProps = dispatch => bindActionCreators({
-  userDetail: payload => userDetail(payload),
-}, dispatch)
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
@@ -230,3 +239,16 @@ const styles = StyleSheet.create ({
     marginLeft: 20
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+     user: state.user,
+     loc: state.loc
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  userDetail: payload => userDetail(payload),
+  saveLocation: payload => saveLocation(payload),
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

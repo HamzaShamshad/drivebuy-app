@@ -143,11 +143,11 @@ export default class Signup extends React.Component {
         });
       }
       createFormData(pic, body) {
-        const data = new FormData(); 
+        const data = new FormData();
         if(pic === null){
           data.append("avatar", {
-            name: "general",
-            type: "avatar",
+            name: "sample.jpg",
+            type: "image/jpeg",
             uri: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
           });
         }

@@ -6,7 +6,6 @@ import {
     Button
 } from "react-native";
 import Tags from './Tags'
-import { electronics } from './Data'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
@@ -85,7 +84,7 @@ class ElectronicsScreen extends Component {
             
             this.props.userDetail(json);
      
-            console.log('state saved is  :', this.props.userObject);
+            console.log('state saved is :', this.props.userObject);
             console.log('cites  are      ' , this.props.userObject[0].city )
 
             this.cities = this.props.userObject[0].city;
@@ -98,16 +97,14 @@ class ElectronicsScreen extends Component {
     async getLocation(){
         
         const obj = {};
-        obj["id"] = 19;
+        obj["id"] = this.props.userObject[0].user.id;
         obj["list_num"] = this.i;
   
-        // console.log("this.state.mycoords before" , this.state.mycoords);
         await this.MapsApiCall(obj);
 
         this.setState({
             loading: false,
         });
-        // console.log("this.state.mycoords after" , i);
     }
 
     getNewlocs = () => {
@@ -154,7 +151,6 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     addItemToCart: payload => addToList(payload),
     removeItemFromCart: payload => removeFromList(payload),
     userDetail: obj => userDetail(obj)
-
 }, dispatch)
-25
+
 export default connect(mapStateToProps, mapDispatchToProps)(ElectronicsScreen);

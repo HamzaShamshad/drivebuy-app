@@ -1,14 +1,13 @@
 import React from 'react';
 import { View, Text, StyleSheet , Dimensions , ActivityIndicator , TouchableOpacity} from 'react-native';
 import { Actions } from 'react-native-router-flux';
-import { Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Octicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Image , Avatar } from 'react-native-elements';
-import { TouchableNativeFeedback } from 'react-native-gesture-handler';
+
+
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {userDetail} from "../../redux/actions/userDetail"
