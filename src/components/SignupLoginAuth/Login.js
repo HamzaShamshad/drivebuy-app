@@ -15,11 +15,12 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import { connect } from "react-redux";
 import { bindActionCreators } from 'redux';
 import {userDetail} from "../../redux/actions/userDetail"
-import {isLoading} from "../../redux/actions/registered"
-import Spinner from 'react-native-loading-spinner-overlay';
-
+import {saveLocation} from "../../redux/actions/userLoc"
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
+import Geolocation from '@react-native-community/geolocation';
+import {isLoading} from "../../redux/actions/registered"
+import Spinner from 'react-native-loading-spinner-overlay';
 import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
 import DropdownAlert from 'react-native-dropdownalert';
 
@@ -79,6 +80,19 @@ class Login extends React.Component {
       
 
     }
+
+    componentDidMount = () => {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log("current position is  " , position);
+          this.props.saveLocation(position)
+          console.log("saved position is  " , this.props.loc);
+        },
+        (error) => alert(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+      );
+    }
+    
     async loginCall(JsonObj) { 
         
 
@@ -98,9 +112,8 @@ class Login extends React.Component {
            
             if(json.success){
               console.log('Results:', JSON.stringify(json));
-              console.log("json login",json.success)
-              console.log("ID", json.user.first_name)
-              this.props.userDetail(json)
+
+              this.props.userDetail(json);
               console.log('state saved is  :', this.props.user);
               
               this.toHome()
@@ -117,7 +130,7 @@ class Login extends React.Component {
         catch (error) {
             console.error('Error:', error);
         }  
-  }  
+    }  
 
     async handleSubmit(values) {
       if (values){
@@ -169,7 +182,7 @@ class Login extends React.Component {
            );
          }, 1000);
       }
-   }
+    }
    
     render(){
       console.log("LOADING IN LOGIN :: ", this.props.loading);
@@ -241,18 +254,7 @@ class Login extends React.Component {
         )
     }
 }
-const mapStateToProps = state => {
-  return {
-     user: state.user,
-     registeredUser: state.register,
-     loading: state.register.loading
-  }
-}
-const mapDispatchToProps = dispatch => bindActionCreators({
-  userDetail: payload => userDetail(payload),
-  loadingAction: payload => isLoading(payload)
-}, dispatch)
-export default connect(mapStateToProps, mapDispatchToProps)(Login)
+
 const styles = StyleSheet.create ({
   container: {
     flex: 1,
@@ -290,3 +292,20 @@ const styles = StyleSheet.create ({
     top: 50
   }
 });
+
+const mapStateToProps = (state) => {
+  return {
+     user: state.user,
+     loc: state.loc,
+     registeredUser: state.register,
+     loading: state.register.loading
+  }
+}
+
+const mapDispatchToProps = dispatch => bindActionCreators({
+  userDetail: payload => userDetail(payload),
+  saveLocation: payload => saveLocation(payload),
+  loadingAction: payload => isLoading(payload)
+}, dispatch)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
