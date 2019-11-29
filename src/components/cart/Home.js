@@ -3,13 +3,19 @@ import {  StyleSheet, View , Text } from "react-native";
 import MapView, { PROVIDER_GOOGLE , Polyline , Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 
+import {Actions} from 'react-native-router-flux';
+import DropdownAlert from 'react-native-dropdownalert';
+
 import { connect } from "react-redux";
 import {saveLocation} from "../../redux/actions/userLoc"
 import { bindActionCreators } from 'redux';
+
+
+
 class Home extends Component {
     constructor(props) {
       super(props);
-
+      this.flashMessage()
       this.state = {
         mycoords: [
           {
@@ -23,6 +29,11 @@ class Home extends Component {
         }
       };
     }
+
+    ActionOnLocation(){
+      Actions.tags()
+    }
+    
 
     componentDidMount = () => {
       Geolocation.getCurrentPosition(
@@ -51,6 +62,20 @@ class Home extends Component {
             currentCoords: obj,
       });
     }
+    
+    flashMessage(){
+        const {message} = this.props.reducer_data[0]
+        if(message)
+        {
+          setTimeout(() => {
+              this.dropDownAlertRef.alertWithType(
+                'success',
+                'Congratulation',
+                message,
+              );
+            }, 1000);
+        }
+      }
 
 
 
@@ -88,7 +113,7 @@ class Home extends Component {
                   <Text>{this.state.mycoords.longitude}</Text>
 
             </MapView>
-
+            <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
         </View>
     )
   }
@@ -125,7 +150,8 @@ container: {
 
 const mapStateToProps = (state) => {
   return {
-     loc: state.loc
+     loc: state.loc,
+     reducer_data: state.user
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -19,6 +19,10 @@ import {saveLocation} from "../../redux/actions/userLoc"
 import { Button } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Geolocation from '@react-native-community/geolocation';
+import {isLoading} from "../../redux/actions/registered"
+import Spinner from 'react-native-loading-spinner-overlay';
+import FlashMessage, { showMessage, hideMessage } from "react-native-flash-message";
+import DropdownAlert from 'react-native-dropdownalert';
 
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
@@ -33,7 +37,7 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderBottomWidth: 2,
     borderColor: 'indigo',
-    marginBottom: "-3%",
+    marginBottom: "-1.2%",
     marginTop: "-2%",
     height: hp('6.4%'),
     width: wp('84%'),
@@ -67,11 +71,14 @@ const validationSchema = yup.object().shape({
 class Login extends React.Component {
     constructor(props){
       super(props);
+      this.flashMessage()
       this.state = {
         email: '',
         password: '',
-        errorMsg: ""
+        errorMsg: "",
       }
+      
+
     }
 
     componentDidMount = () => {
@@ -86,6 +93,59 @@ class Login extends React.Component {
       );
     }
     
+    async loginCall(JsonObj) { 
+        
+
+        const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
+        try {
+            const response = await fetch(url, {
+              method: 'POST', 
+              body: JSON.stringify(JsonObj), 
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
+            const json = await response.json();
+           
+              this.props.loadingAction(false)
+           
+           
+            if(json.success){
+              console.log('Results:', JSON.stringify(json));
+
+              this.props.userDetail(json);
+              console.log('state saved is  :', this.props.user);
+              
+              this.toHome()
+              this.props.loadingAction(true)
+
+            }else{
+                this.setState({
+                  errorMsg: json.message,
+                })
+              this.dropDownAlertRef.alertWithType('error', 'Login Failed', this.state.errorMsg);     
+            }
+               
+        } 
+        catch (error) {
+            console.error('Error:', error);
+        }  
+    }  
+
+    async handleSubmit(values) {
+      if (values){
+        var obj = {};    
+        console.log("EMAIL: ", values.email)
+        console.log("PASSWORD: ", values.password)
+        obj["email"] = values.email;
+        obj["password"] = values.password; 
+        this.props.loadingAction(false)
+        // console.log("BEFORE CALL", this.props.register.loading)
+        this.loginCall(obj); 
+        // console.log("AFTER CALL", this.props.register.loading)
+        this.props.loadingAction(false)
+      }
+    }
     toHome(){
       Actions.home()
     }
@@ -110,73 +170,63 @@ class Login extends React.Component {
     goProfile(){
       Actions.profile()
     }
-    
-    async loginCall(JsonObj) { 
-        const url = 'https://space-rental.herokuapp.com/users/sign_in_call';     
-        try {
-            const response = await fetch(url, {
-              method: 'POST', 
-              body: JSON.stringify(JsonObj), 
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
-            const json = await response.json();  
-            if(json.success){
-              console.log('Results:', JSON.stringify(json));
-
-              this.props.userDetail(json);
-              console.log('state saved is  :', this.props.user);
-              this.toHome()
-            }else{             
-                this.setState({
-                  errorMsg: json.message
-                })
-            }           
-        } 
-        catch (error) {
-            console.error('Error:', error);
-        }  
-    }  
-
-    async handleSubmit(values) {
-      if (values){
-        var obj = {};    
-        console.log("EMAIL: ", values.email)
-        console.log("PASSWORD: ", values.password)
-        obj["email"] = values.email;
-        obj["password"] = values.password; 
-        this.loginCall(obj);     
+    flashMessage(){         
+      // const {success} = this.props.registeredUser[0]
+      if(this.props.registeredUser[0])
+      {
+       setTimeout(() => {
+           this.dropDownAlertRef.alertWithType(
+             'success',
+             'Congratulation',
+              "Registered Successfully",
+           );
+         }, 1000);
       }
     }
-    
-    render(){  
-        return(
-            <SafeAreaView style={styles.container}>           
+   
+    render(){
+      console.log("LOADING IN LOGIN :: ", this.props.loading);
+      return(
+          
+            <SafeAreaView style={[styles.loginPage, styles.container]}>      
+            {/* {this.props.loading ? (<Text>NO</Text>): <ActivityIndicator/>}   */}
                 <Formik
                 initialValues={this.state}      
                 onSubmit={this.handleSubmit.bind(this)}
                 validationSchema={validationSchema}
+                
                 >
                 {formikProps => (
-                  <React.Fragment>       
-                    <Text style={styles.error}>{this.state.errorMsg}</Text>
-                    <StyledInput 
-                        label="Email"
-                        formikProps={formikProps}
-                        formikKey="email"
-                        placeholder="Please enter your email"
-                    />
-                  <StyledInput 
-                      label="Password"
-                      formikProps={formikProps}
-                      formikKey="password"
-                      placeholder="Please enter your Password"
-                      secureTextEntry
-                  />          
-                  {formikProps.isSubmitting ? (
-                      <ActivityIndicator />
+                  <React.Fragment>    
+                    {/* <DropdownAlert imageStyle={{ padding: 8, width: 10, height: 10, alignSelf: 'center' }}containerStyle={{marginBottom: 30,  backgroundColor: 'transparent'}} messageStyle={{ fontSize: 10, textAlign: 'left', fontWeight: 'bold', color: 'white', backgroundColor: 'transparent', marginBottom: 30}} ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/> */}
+                    
+                   
+                  {this.props.loading? (
+                     <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+                        <Spinner
+                            visible={this.props.loading}
+                            // textContent={'Logging in, Please wait'}
+                        />
+                        {/* <ActivityIndicator animating={this.props.loading} color="indigo" size="large" /> */}
+                    </View>   
                   ) : (
+                        null
+                  )}
+                
+               
+                            <StyledInput 
+                          label="Email"
+                          formikProps={formikProps}
+                          formikKey="email"
+                          placeholder="Please enter your email"
+                      />
+                    <StyledInput 
+                        label="Password"
+                        formikProps={formikProps}
+                        formikKey="password"
+                        placeholder="Please enter your Password"
+                        secureTextEntry
+                    />          
                     <Button
                       icon={
                         <Icon
@@ -185,21 +235,22 @@ class Login extends React.Component {
                           color="white"
                         />
                       }
+                      
                     buttonStyle={styles.buttonMenu}
                     iconLeft 
                     title="  Login  "
-                    onPress={formikProps.handleSubmit} 
+                    onPress={formikProps.handleSubmit}  
+
                   />
-                  )}
-                
-                <View   style={styles.info} >
+                   <View   style={styles.info} >
                 <Text >Don't have an account? </Text>
                   <TouchableOpacity onPress={this.signup}><Text>Signup</Text></TouchableOpacity>
                 </View>
-                  
                   </React.Fragment>
                 )}
                 </Formik>
+                <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
+
             </SafeAreaView>
         )
     }
@@ -237,18 +288,25 @@ const styles = StyleSheet.create ({
   error:{
     color: "red",
     marginLeft: 20
+  },
+  loginPage:{
+    top: 50
   }
 });
 
 const mapStateToProps = (state) => {
   return {
      user: state.user,
-     loc: state.loc
+     loc: state.loc,
+     registeredUser: state.register,
+     loading: state.register.loading
   }
 }
+
 const mapDispatchToProps = dispatch => bindActionCreators({
   userDetail: payload => userDetail(payload),
   saveLocation: payload => saveLocation(payload),
+  loadingAction: payload => isLoading(payload)
 }, dispatch)
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

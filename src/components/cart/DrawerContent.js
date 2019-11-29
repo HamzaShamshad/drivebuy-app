@@ -67,7 +67,7 @@ class DrawerContent extends React.Component {
                     <Icon
                         name={this.state.icon}
                         size={25}
-                        color="green"
+                        color="indigo"
                         style={styles.iconStyle}
                         backgroundColor= "grey"
                     />
@@ -80,7 +80,7 @@ class DrawerContent extends React.Component {
                     <SimpleLineIcons
                         name="star"
                         size={25}
-                        color="green"
+                        color="indigo"
                         style={styles.iconStyle}
                     />
                     <TouchableOpacity style={{width: 100}} onPress={this.goCart}>
@@ -92,7 +92,7 @@ class DrawerContent extends React.Component {
                     <SimpleLineIcons
                         name="layers"
                         size={25}
-                        color="green"
+                        color="indigo"
                         style={styles.iconStyle}
                     />
                     <TouchableOpacity style={{width: 100}} onPress={this.goAvailible}>
@@ -104,7 +104,7 @@ class DrawerContent extends React.Component {
                     <MaterialIcons
                         name="person-pin"
                         size={25}
-                        color="green"
+                        color="indigo"
                         style={styles.iconStyle}
                     />
                      <TouchableOpacity style={{width: 100}} onPress={this.goProfile}>
@@ -116,7 +116,7 @@ class DrawerContent extends React.Component {
                     <MaterialCommunityIcons
                         name="google-maps"
                         size={25}
-                        color="green"
+                        color="indigo"
                         style={styles.iconStyle}
                     />
                      <TouchableOpacity style={{width: 100}} onPress={this.goMaps}>

@@ -9,6 +9,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {userDetail} from "../../redux/actions/userDetail"
 import Icon from 'react-native-vector-icons/Feather';
+import DropdownAlert from 'react-native-dropdownalert';
 
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
     <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
@@ -55,7 +56,8 @@ export class Profile extends Component {
         this.state = {
             avatarSource: null,
             inputFieldHideShow: false,
-            photo: null
+            photo: null,
+            hideInputContent: false
         }
         this.handleUploadPhoto = this.handleUploadPhoto.bind(this);
       }
@@ -92,6 +94,13 @@ export class Profile extends Component {
             avatarSource: source,
             photo: response,
           });
+          setTimeout(() => {
+            this.dropDownAlertRef.alertWithType(
+              'success',
+              'Congratulation',
+               "Image Saved Successfully",
+            );
+          }, 1000);
         }
       });
     }
@@ -142,6 +151,13 @@ export class Profile extends Component {
         obj["first_name"] = values.name;
         obj["last_name"] = this.props.reducer_data[0].user.last_name;   
         this.EditUserApiCall(this.state.photo , obj);
+        setTimeout(() => {
+          this.dropDownAlertRef.alertWithType(
+            'success',
+            'Congratulation',
+             "Username Saved Successfully",
+          );
+        }, 1000);
       } 
     }
     editUsername(){
@@ -174,7 +190,8 @@ export class Profile extends Component {
 
             <View
             style={{marginBottom: 20}}>
-            {this.state.inputFieldHideShow === true ? (
+            
+            {this.state.inputFieldHideShow === true? (
                 <Formik
                 initialValues={this.state}    
                 onSubmit={this.handleSubmit.bind(this)}
@@ -184,7 +201,7 @@ export class Profile extends Component {
                     <React.Fragment>
                     <StyledInput 
                         formikProps={formikProps}
-                        formikKey="name"
+                        formikKey="name"inputFieldHideShow
                         placeholder="New Username"
                     />
                     {formikProps.isSubmitting ? (
@@ -214,7 +231,9 @@ export class Profile extends Component {
                     onPress={this.editUsername.bind(this)}
                   />
             )}
-          </View>            
+          </View> 
+          <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
+           
           </View>
         )
     }

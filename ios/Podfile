@@ -34,14 +34,10 @@ target 'AwesomeProject' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'react-native-maps', :path => '../node_modules/react-native-maps'
-
-  pod 'react-native-geolocation', :path => '../node_modules/@react-native-community/geolocation'
-
-  pod 'RNBackgroundGeolocation', :path => '../node_modules/react-native-background-geolocation'
 
 
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 

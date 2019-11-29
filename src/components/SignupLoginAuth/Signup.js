@@ -16,7 +16,12 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 import ImagePicker from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/Feather';
 import { Button } from 'react-native-elements';
-
+import DropdownAlert from 'react-native-dropdownalert';
+import {registeredUser} from "../../redux/actions/registered"
+import { connect } from "react-redux";
+import { bindActionCreators } from 'redux';
+import {isLoading} from "../../redux/actions/registered"
+import Spinner from 'react-native-loading-spinner-overlay';
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
   <View style={{ marginHorizontal: 20, marginVertical: 3 }}>
     <Text style={{ marginBottom: 3 }}>{label}</Text>
@@ -30,7 +35,7 @@ const StyledInput = ({ label, formikProps, formikKey, ...rest }) => {
   const inputStyles = {
     borderBottomWidth: 2,
     borderColor: 'indigo',
-    marginBottom: "-3%",
+    marginBottom: "-1.2%",
     marginTop: "-2%",
     height: hp('6.4%'),
     width: wp('84%'),
@@ -76,7 +81,7 @@ const validationSchema = yup.object().shape({
       return this.parent.password === value;
     })
 });
-export default class Signup extends React.Component {
+class Signup extends React.Component {
     constructor(props){
       super(props);
       this.state = {
@@ -87,7 +92,7 @@ export default class Signup extends React.Component {
           confirmPassword: '',
           avatarSource: null,
           photo: null,
-          errorMsg: ''
+          errorMsg: '',
       }
     }
     test() {
@@ -175,20 +180,31 @@ export default class Signup extends React.Component {
               body:  this.createFormData(photo, otherParams),
             });
             const json = await response.json();
+
+            this.props.loadingAction(true)
+
             console.log("Signup responce is: ", JSON.stringify(json));
+            this.props.registeredUser(json)
             if(!json.success){
               console.log("THERE IS ERROR")
               this.setState({
                 errorMsg: `email ${json.user.email}`,
               })
+              this.dropDownAlertRef.alertWithType('error', 'Error', this.state.errorMsg);
             }else{
-              this.goLogin()
+              
+
+                this.goLogin()
+                this.props.loadingAction(true)
+
             }
         } 
         catch (error) {
             console.error('Error:', error);
         }
       }
+        
+      
       handleSubmit(values) { 
         if (values){
               let obj = {};
@@ -197,15 +213,21 @@ export default class Signup extends React.Component {
               obj["email"] = values.email;
               obj["password"] = values.password;
               obj["password_confirmation"]= values.confirmPassword;
+              this.props.loadingAction(false)
               this.SignupApiCall(this.state.photo , obj);
+              this.props.loadingAction(false)
+              
         } 
       }
       goLogin(){
         Actions.login()
       }
     render(){
+        console.log("LOADING IN SIGNUP", this.props.loading)
         return(
-            <SafeAreaView style={styles.container}>       
+            <SafeAreaView style={styles.container}>  
+            {/* {this.state.isLoading ? (<ActivityIndicator/>) : (this.goLogin())} */}
+            {/* <Button onPress={this.loading()}/> */}
                 <Formik 
                   initialValues={this.state}
                   onSubmit={this.handleSubmit.bind(this)}
@@ -213,7 +235,7 @@ export default class Signup extends React.Component {
                   >
                   {formikProps => (
                       <React.Fragment>
-                      <Text style={styles.error}>{this.state.errorMsg}</Text>
+                      <DropdownAlert ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/>
                       <StyledInput 
                           label="firstname"
                           formikProps={formikProps}
@@ -249,7 +271,7 @@ export default class Signup extends React.Component {
                       />
                       <TouchableOpacity onPress={this.selectPhotoTapped.bind(this)}>
                             <View
-                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 20, marginTop: "-4%"}]}>
+                              style={[styles.avatar, styles.avatarContainer, {marginBottom: 30, marginTop: "-1%"}]}>
                               {this.state.avatarSource === null ? (
                                   <View>
                                   <Text style={{marginLeft: "7%"}}>Select Photo</Text>       
@@ -259,10 +281,19 @@ export default class Signup extends React.Component {
                               )}
                             </View>
                         </TouchableOpacity>
-                      {formikProps.isSubmitting ? (
-                          <ActivityIndicator />
+                      {this.props.loading ? (
+                          
+                          <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
+                            {/* <Spinner
+                              visible={this.props.loading}
+                              textContent={'Loading, Please wait'}
+                        /> */}
+                        <ActivityIndicator/>
+                          </View>  
                       ) : (
-                        <Button
+                       null
+                      )}
+                       <Button
                           icon={
                             <Icon
                               name="user-plus"
@@ -275,7 +306,6 @@ export default class Signup extends React.Component {
                           title="  Sign up  "
                           onPress={formikProps.handleSubmit} 
                       />
-                      )}
                       <View style={styles.info}>
                       <Text >Have an account? </Text>
                       <TouchableOpacity onPress={this.goLogin}><Text>Login</Text></TouchableOpacity>
@@ -327,3 +357,17 @@ error:{
   marginLeft: 20
 }
 });
+
+const mapStateToProps = state => {
+  return {
+     registerUser: state.register,
+     loading: state.register.loading
+
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  registeredUser: payload => registeredUser(payload),
+  loadingAction: payload => isLoading(payload)
+
+}, dispatch)
+export default connect(mapStateToProps, mapDispatchToProps)(Signup)

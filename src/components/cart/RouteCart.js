@@ -30,9 +30,7 @@ export default class RouteCart extends Component {
 							<Scene key="profile" component={Profile} title="My Profile" />
 							<Scene key="maps" component={GoogleMaps} title="Maps" />
 							<Scene key="info" component={Info} title="Location Info" />
-
-						</Drawer>
-					
+						</Drawer>					
 					<Scene key="login" component={Login} title="Login" initial={true}/>
 					<Scene key="signup" component={Signup} title="Signup" />
 			    
