@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
     },
     insideContiner: {
         width: "100%",
-        // top: 60,
         margin: 15,
         flexDirection: "row",
         alignContent: "center",

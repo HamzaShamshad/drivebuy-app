@@ -1,13 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet , Dimensions , ActivityIndicator , TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet , Dimensions , TouchableOpacity} from 'react-native';
 import { Actions } from 'react-native-router-flux';
 import Icon from 'react-native-vector-icons/Octicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Image , Avatar } from 'react-native-elements';
-
-
+import { Avatar } from 'react-native-elements';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import {userDetail} from "../../redux/actions/userDetail"
@@ -46,7 +44,6 @@ class DrawerContent extends React.Component {
     render(){
         return (
             <View style={ styles.container }>
-                {/* <Text  style={{ marginTop: 10 , marginLeft: 20 , fontSize: 20 , color: "black"}}>Near by Locations</Text> */}
 
                 <View style={styles.topDrawer}>
                     <View style={styles.pic}>
@@ -135,7 +132,6 @@ class DrawerContent extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // backgroundColor: 'indigo',
     }, 
     topDrawer: {
         flex: 1.5,
@@ -156,7 +152,6 @@ const styles = StyleSheet.create({
 
     bottomDrawer: {
         flex: 8,
-        // alignContent: 'center',
         backgroundColor: '#fff',
         paddingVertical: 10,
         

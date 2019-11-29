@@ -3,7 +3,6 @@ import {
     View,
     Text,
     StyleSheet,
-    TouchableOpacity
 } from "react-native";
 import { connect } from 'react-redux'
 import {removeFromList} from "../../redux/actions/index"
@@ -18,19 +17,20 @@ class Tags extends Component {
     }
 
     renderProducts = (products) => {
-        console.log("Products", products)
+        console.log("Before calling reducer action", products)
         console.log("this.props.listItems", this.props.listItems)
+        // console.log("After calling reducer action", products.push(this.props.listItems))
         return products.map((item, index) => {
             var fl = this.props.listItems.length > 0 && this.props.listItems.filter(itemList => itemList.id == item.id)
             if(fl[0]){
-                
+                console.log("Item", this.props.listItems)
                 return (
                     <View key={index} style={styles.insideContiner}> 
                         <Icon
                             name="minuscircleo"
                             size={25}
                             color="red"
-                            onPress={() => this.props.removeItemFromCart(fl[0])}
+                            onPress={() => this.props.removeItemFromCart(item)}
                         />
                         <Text style={{fontSize: 20, marginLeft: 10 , marginRight: "40%"}}>{item.city}</Text>                        
                         <Icon

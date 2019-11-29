@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import {userDetail} from "../../redux/actions/userDetail"
 import Icon from 'react-native-vector-icons/Feather';
 import DropdownAlert from 'react-native-dropdownalert';
+import {isLoading} from "../../redux/actions/registered"
 
 const FieldWrapper = ({ children, label, formikProps, formikKey }) => (
     <View style={{ marginHorizontal: 20, marginVertical: 5 }}>
@@ -62,7 +63,6 @@ export class Profile extends Component {
         this.handleUploadPhoto = this.handleUploadPhoto.bind(this);
       }
     componentDidMount(){
-        const {user} = this.props
         const sourceImage = {uri: this.props.reducer_data[0].user.image_url}
         this.setState({
           avatarSource: sourceImage,
@@ -98,7 +98,7 @@ export class Profile extends Component {
             this.dropDownAlertRef.alertWithType(
               'success',
               'Congratulation',
-               "Image Saved Successfully",
+               "Your profile picture Saved Successfully",
             );
           }, 1000);
         }
@@ -144,32 +144,37 @@ export class Profile extends Component {
     }
     handleSubmit(values) {
       if (values){
-        console.log("values are  -------------------------------------------- " , values);
+        console.log("values are -------------------------------------------- " , values);
         const {user} = this.props
         let obj = {};   
         obj["id"] =  this.props.reducer_data[0].user.id;
         obj["first_name"] = values.name;
         obj["last_name"] = this.props.reducer_data[0].user.last_name;   
         this.EditUserApiCall(this.state.photo , obj);
+        this.props.loadingAction(false)
+        this.setState({
+          inputFieldHideShow: false 
+        })
         setTimeout(() => {
           this.dropDownAlertRef.alertWithType(
             'success',
             'Congratulation',
-             "Username Saved Successfully",
+             (`Your username as ${this.props.reducer_data[0].user.first_name} saved successfully`) ,
           );
-        }, 1000);
+        }, 500);
       } 
     }
     editUsername(){
         this.setState({              
           inputFieldHideShow: true  
         });
-    } 
+        
+      } 
     render() {
       console.log("IN RENDER", this.props.reducer_data[0].user.first_name)
         return (
             <View style={styles.container}>
-                <Text style={{marginBottom: 15}}> Your first name: {this.props.reducer_data[0].user.first_name} </Text>
+                <Text style={{marginBottom: 15, fontSize: 30}}> Hi, {this.props.reducer_data[0].user.first_name} </Text>
                  <TouchableOpacity onPress={this.handleUploadPhoto.bind(this)}>
                       <View
                         style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
@@ -187,47 +192,50 @@ export class Profile extends Component {
                       </View>
                   </TouchableOpacity>
                   <Text style={styles.usernameText}>{this.props.reducer_data[0].user.first_name}</Text>
-
-            <View
-            style={{marginBottom: 20}}>
+            <View>
             
-            {this.state.inputFieldHideShow === true? (
+            {this.state.inputFieldHideShow ? (
                 <Formik
                 initialValues={this.state}    
                 onSubmit={this.handleSubmit.bind(this)}
                 validationSchema={validationSchema}
                 >
+                
                 {formikProps => (
-                    <React.Fragment>
-                    <StyledInput 
-                        formikProps={formikProps}
-                        formikKey="name"inputFieldHideShow
-                        placeholder="New Username"
-                    />
-                    {formikProps.isSubmitting ? (
-                        <ActivityIndicator />
-                    ) : (
-                    <Button  
-                    icon={
-                      <Icon
-                        name="save"
-                        size={20}
-                        color="white"
+                    <View style={styles.inputandbuttonView}>
+                      <React.Fragment>
+                     
+                     <StyledInput 
+                          formikProps={formikProps}
+                          formikKey="name"
+                          placeholder="Please enter username"
                       />
-                    }
-                    title="  Save your name"
-                    buttonStyle={styles.save}  
-                    onPress={formikProps.handleSubmit}
-                    />
+                      {formikProps.isSubmitting ? (
+                          <ActivityIndicator />
+                      ) : (
+                      <Button  
+                      icon={
+                        <Icon
+                          name="save"
+                          size={20}
+                          color="white"
+                        />
+                      }
+                      title="  Save "
+                      buttonStyle={styles.save}  
+                      onPress={formikProps.handleSubmit}
+                      />
+                    
                     )}
                     </React.Fragment>
+                    </View>
                 )}
                 </Formik>
             ) : (
                   <Icon
                     name="edit"
-                    size={25}
-                    color="green"
+                    size={30}
+                    color="indigo"
                     onPress={this.editUsername.bind(this)}
                   />
             )}
@@ -251,13 +259,16 @@ const styles = StyleSheet.create ({
     alignItems: 'center',
   },
   usernameText: {
-   fontSize: 13,
+   fontSize: 30,
   },
   inputField:{
     borderBottomColor: "indigo",
     marginBottom: "-3%",
     height: hp('8%'), 
     width: wp('40%'),
+  },
+  inputandbuttonView:{
+    marginLeft: 30
   },
     titleText: {
         fontSize: 25,
@@ -280,8 +291,8 @@ const styles = StyleSheet.create ({
     save:{
         backgroundColor: "indigo",
         width: wp("50%"),
-        marginLeft: "15%",
-        marginTop: 20
+        marginLeft: "12.3%",
+        marginTop: 10
   
       },
     avatar: {
@@ -292,10 +303,14 @@ const styles = StyleSheet.create ({
   });
 const mapStateToProps = state => {
   return {
-    reducer_data: state.user
+    reducer_data: state.user,
+    loading: state.register.loading
+
   };
 };
 const mapDispatchToProps = dispatch => bindActionCreators({
-  userDetail: payload => userDetail(payload)
+  userDetail: payload => userDetail(payload),
+  loadingAction: payload => isLoading(payload)
+
 }, dispatch)
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);
