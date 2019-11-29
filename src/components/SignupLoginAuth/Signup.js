@@ -148,11 +148,11 @@ class Signup extends React.Component {
         });
       }
       createFormData(pic, body) {
-        const data = new FormData(); 
+        const data = new FormData();
         if(pic === null){
           data.append("avatar", {
-            name: "general",
-            type: "avatar",
+            name: "sample.jpg",
+            type: "image/jpeg",
             uri: "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"
           });
         }
@@ -170,6 +170,7 @@ class Signup extends React.Component {
         return data;
       };
 
+
       async SignupApiCall(photo , otherParams) {
         console.log("responce of picture :" , photo );
         console.log("object is   " , otherParams);
@@ -181,7 +182,7 @@ class Signup extends React.Component {
             });
             const json = await response.json();
 
-            this.props.loadingAction(true)
+            this.props.loadingAction(false)
 
             console.log("Signup responce is: ", JSON.stringify(json));
             this.props.registeredUser(json)
@@ -195,7 +196,7 @@ class Signup extends React.Component {
               
 
                 this.goLogin()
-                this.props.loadingAction(true)
+                this.props.loadingAction(false)
 
             }
         } 
@@ -213,9 +214,8 @@ class Signup extends React.Component {
               obj["email"] = values.email;
               obj["password"] = values.password;
               obj["password_confirmation"]= values.confirmPassword;
-              this.props.loadingAction(false)
               this.SignupApiCall(this.state.photo , obj);
-              this.props.loadingAction(false)
+              this.props.loadingAction(true)
               
         } 
       }
@@ -226,8 +226,7 @@ class Signup extends React.Component {
         console.log("LOADING IN SIGNUP", this.props.loading)
         return(
             <SafeAreaView style={styles.container}>  
-            {/* {this.state.isLoading ? (<ActivityIndicator/>) : (this.goLogin())} */}
-            {/* <Button onPress={this.loading()}/> */}
+           
                 <Formik 
                   initialValues={this.state}
                   onSubmit={this.handleSubmit.bind(this)}
@@ -288,7 +287,7 @@ class Signup extends React.Component {
                               visible={this.props.loading}
                               textContent={'Loading, Please wait'}
                         /> */}
-                        <ActivityIndicator/>
+                        {/* <ActivityIndicator/> */}
                           </View>  
                       ) : (
                        null

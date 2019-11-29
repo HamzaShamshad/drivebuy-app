@@ -93,7 +93,7 @@ class Login extends React.Component {
             });
             const json = await response.json();
            
-              this.props.loadingAction(false)
+              this.props.loadingAction(true)
            
            
             if(json.success){
@@ -104,7 +104,7 @@ class Login extends React.Component {
               console.log('state saved is  :', this.props.user);
               
               this.toHome()
-              this.props.loadingAction(true)
+              this.props.loadingAction(false)
 
             }else{
                 this.setState({
@@ -185,14 +185,13 @@ class Login extends React.Component {
                 >
                 {formikProps => (
                   <React.Fragment>    
-                    {/* <DropdownAlert imageStyle={{ padding: 8, width: 10, height: 10, alignSelf: 'center' }}containerStyle={{marginBottom: 30,  backgroundColor: 'transparent'}} messageStyle={{ fontSize: 10, textAlign: 'left', fontWeight: 'bold', color: 'white', backgroundColor: 'transparent', marginBottom: 30}} ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/> */}
                     
                    
                   {this.props.loading? (
                      <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
                         <Spinner
                             visible={this.props.loading}
-                            // textContent={'Logging in, Please wait'}
+                            textContent={'Loading, Please wait'}
                         />
                         {/* <ActivityIndicator animating={this.props.loading} color="indigo" size="large" /> */}
                     </View>   
