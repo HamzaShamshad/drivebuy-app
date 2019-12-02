@@ -53,13 +53,10 @@
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
-<<<<<<< HEAD
     <key>UIBackgroundModes</key>
     <array>
       <string>location</string>
     </array>
-=======
->>>>>>> 9c5f06faa82a3f80e992ae3123ca7822033f725a
     <key>NSLocationAlwaysUsageDescription</key>
     <string>CHANGEME: Location Always Usage Description</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -84,12 +81,9 @@
       <string>Octicons.ttf</string>
       <string>SimpleLineIcons.ttf</string>
       <string>Zocial.ttf</string>
-<<<<<<< HEAD
       <string>Roboto_medium.ttf</string>
       <string>Roboto.ttf</string>
       <string>rubicon-icon-font.ttf</string>
-=======
->>>>>>> 9c5f06faa82a3f80e992ae3123ca7822033f725a
     </array>
   </dict>
 </plist>
