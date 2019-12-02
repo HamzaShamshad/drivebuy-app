@@ -107,7 +107,7 @@ class Login extends React.Component {
             });
             const json = await response.json();
            
-              this.props.loadingAction(false)
+              this.props.loadingAction(true)
            
            
             if(json.success){
@@ -117,7 +117,7 @@ class Login extends React.Component {
               console.log('state saved is  :', this.props.user);
               
               this.toHome()
-              this.props.loadingAction(true)
+              this.props.loadingAction(false)
 
             }else{
                 this.setState({
