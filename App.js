@@ -14,7 +14,6 @@ import RouteCart from "./src/components/cart/RouteCart"
 import configureStore from "./src/redux/store/index"
 import {Provider} from "react-redux"
 import FlashMessage from "react-native-flash-message";
-
 const store = configureStore()
 export default class App extends React.Component  {
   render(){
@@ -27,7 +26,6 @@ export default class App extends React.Component  {
             <FlashMessage position="top" animated={true} />
               <RouteCart/>
             </Provider>
-
         </View>
       </View>
   );
