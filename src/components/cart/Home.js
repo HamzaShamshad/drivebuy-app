@@ -86,16 +86,17 @@ class Home extends Component {
     }
     
     flashMessage(){
-        const {message} = this.props.reducer_data[0]
+        const {message, user} = this.props.reducer_data[0]
+        console.log("USER", user.first_name)
         if(message)
         {
           setTimeout(() => {
               this.dropDownAlertRef.alertWithType(
                 'success',
                 'Congratulation',
-                message,
+                `${message} as ${user.first_name}`,
               );
-            }, 1000);
+            }, 500);
         }
       }
       

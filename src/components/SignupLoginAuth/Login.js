@@ -140,9 +140,7 @@ class Login extends React.Component {
         obj["email"] = values.email;
         obj["password"] = values.password; 
         this.props.loadingAction(false)
-        // console.log("BEFORE CALL", this.props.register.loading)
         this.loginCall(obj); 
-        // console.log("AFTER CALL", this.props.register.loading)
         this.props.loadingAction(false)
       }
     }
@@ -171,14 +169,13 @@ class Login extends React.Component {
       Actions.profile()
     }
     flashMessage(){         
-      // const {success} = this.props.registeredUser[0]
       if(this.props.registeredUser[0])
       {
        setTimeout(() => {
            this.dropDownAlertRef.alertWithType(
              'success',
              'Congratulation',
-              "Registered Successfully",
+              "You have Registered Successfully",
            );
          }, 1000);
       }
@@ -189,7 +186,6 @@ class Login extends React.Component {
       return(
           
             <SafeAreaView style={[styles.loginPage, styles.container]}>      
-            {/* {this.props.loading ? (<Text>NO</Text>): <ActivityIndicator/>}   */}
                 <Formik
                 initialValues={this.state}      
                 onSubmit={this.handleSubmit.bind(this)}
@@ -198,16 +194,14 @@ class Login extends React.Component {
                 >
                 {formikProps => (
                   <React.Fragment>    
-                    {/* <DropdownAlert imageStyle={{ padding: 8, width: 10, height: 10, alignSelf: 'center' }}containerStyle={{marginBottom: 30,  backgroundColor: 'transparent'}} messageStyle={{ fontSize: 10, textAlign: 'left', fontWeight: 'bold', color: 'white', backgroundColor: 'transparent', marginBottom: 30}} ref={ref => this.dropDownAlertRef = ref} closeInterval={1000}/> */}
                     
                    
                   {this.props.loading? (
                      <View style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0 }}>
                         <Spinner
                             visible={this.props.loading}
-                            // textContent={'Logging in, Please wait'}
+                            textContent={'Loading, Please wait'}
                         />
-                        {/* <ActivityIndicator animating={this.props.loading} color="indigo" size="large" /> */}
                     </View>   
                   ) : (
                         null
@@ -283,7 +277,8 @@ const styles = StyleSheet.create ({
     backgroundColor: "indigo",
     marginBottom: 10,
     width: wp("40%"),
-    marginLeft: 20
+    marginLeft: 20,
+    elevation: -2
   },
   error:{
     color: "red",

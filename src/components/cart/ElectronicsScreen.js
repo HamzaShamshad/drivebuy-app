@@ -3,7 +3,6 @@ import {
     View,
     StyleSheet,
     ActivityIndicator,
-    Button
 } from "react-native";
 import Tags from './Tags'
 import { connect } from 'react-redux'
