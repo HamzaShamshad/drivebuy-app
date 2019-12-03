@@ -11,6 +11,7 @@ class PlaceDetail  extends Component {
 
     printResults = () => {
         if (this.props.selectedPlace) {
+            const pic = {uri: this.props.selectedPlace.icon}
             return (
                     <ScrollView style={styles.modalContainer}>
                     

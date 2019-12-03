@@ -28,7 +28,7 @@ class Home extends Component {
           latitude: this.props.loc[0].coords.latitude,
           longitude: this.props.loc[0].coords.longitude,
         },
-        availLocs: null,
+        availableLocations: null,
         selectedPlace: null,
       };
     }
@@ -49,40 +49,80 @@ class Home extends Component {
           });
         },
         (error) => alert(error.message),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 2000 }
       );
+    }
+
+    degreesToRadians(degrees){
+      return degrees * Math.PI / 180;
+    }
+
+    getDistanceBetweenPoints(lat1, lng1, lat2, lng2){
+      // The radius of the planet earth in meters
+      const R = 6378137;
+      let dLat = this.degreesToRadians(lat2 - lat1);
+      let dLong = this.degreesToRadians(lng2 - lng1);
+      let a = Math.sin(dLat / 2)
+              *
+              Math.sin(dLat / 2) 
+              +
+              Math.cos(this.degreesToRadians(lat1)) 
+              * 
+              Math.cos(this.degreesToRadians(lat1)) 
+              *
+              Math.sin(dLong / 2) 
+              * 
+              Math.sin(dLong / 2);
+  
+      let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      let distance = R * c;
+  
+      return distance;
+    }
+
+    nearByLocations = null;
+
+    async LocationsApiCall() {
+      const url = 'https://space-rental.herokuapp.com/users/19/all_locations';
+      try {
+        const res = await fetch(url);
+        const responce = await res.json();
+        this.nearByLocations = responce.city;
+        console.log('locations are:-------    ' , responce.city);
+      } 
+      catch (error) {
+          console.error('Error in gecoding call:', error);
+      }
+    }
+
+    async getLocations(obj){
+
+      await this.LocationsApiCall();
+
+      const radius = 2000; 
+      let withInDistance = [];
+
+      this.nearByLocations.map((loc) => {
+        
+        var distanceInMeters = this.getDistanceBetweenPoints(obj.latitude , obj.longitude , loc.geometry.location.lat ,  loc.geometry.location.lng);
+        
+        if(distanceInMeters < radius ){
+          withInDistance = withInDistance.concat(loc)
+        }
+      });
+
+      this.setState({
+        currentCoords: obj,
+        availableLocations: withInDistance,
+      });
+
     }
 
     setNewLocation(coordinate) {
       
-      const obj ={ latitude: coordinate.latitude , longitude: coordinate.longitude }
-      const radius = 2000
-      const type = 'grocery_or_supermarket'
-      const Api_Key = 'AIzaSyBcbnPdk93hL3stLX3XNlYZtABAyPkJ914'
-      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${coordinate.latitude},${coordinate.longitude}&radius=${radius}&type=${type}&key=${Api_Key}`
+      const obj = { latitude: coordinate.latitude , longitude: coordinate.longitude };
+      this.getLocations(obj);
 
-      // let newCoords = this.state.mycoords;
-      // newCoords = newCoords.concat(obj);
-
-      fetch(url)
-        .then(res => {
-          return res.json()
-        })
-        .then(res => {
-          console.log("near by pharmarcies are     " , res)
-            if(res.status === "OK"){
-
-              this.setState({
-              // mycoords: newCoords,
-              currentCoords: obj,
-              availLocs: res.results
-            });
-
-          }
-        })
-        .catch(error => {
-          console.log("error in google place api call" , error);
-        });  
     }
     
     flashMessage(){
@@ -98,7 +138,7 @@ class Home extends Component {
               );
             }, 500);
         }
-      }
+    }
       
     modalClosedHandler = () => {
       this.setState({
@@ -152,8 +192,8 @@ class Home extends Component {
                     onPress={ (event) => this.setNewLocation(event.nativeEvent.coordinate) }
                     
                     initialRegion={{
-                      latitude: this.props.loc[0].coords.latitude,
-                      longitude:  this.props.loc[0].coords.longitude,
+                      latitude: 31.4728123 , //this.props.loc[0].coords.latitude,
+                      longitude:  74.2688898 , //this.props.loc[0].coords.longitude,
                       latitudeDelta: 0.0922,
                       longitudeDelta: 0.0421,
                     }}>
@@ -163,7 +203,7 @@ class Home extends Component {
                         title={"I am here"}
                     />
                   
-                    {this.createMarkers(this.state.availLocs)}
+                    {this.createMarkers(this.state.availableLocations)}
 
                     {/* <Polyline
                         coordinates={ this.state.mycoords }

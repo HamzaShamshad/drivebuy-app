@@ -89,7 +89,8 @@ class Login extends React.Component {
           console.log("saved position is  " , this.props.loc);
         },
         (error) => alert(error.message),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 }
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 3600000 }
+        // { enableHighAccuracy: true, timeout: 20000, maximumAge: 3600000 }
       );
     }
     
