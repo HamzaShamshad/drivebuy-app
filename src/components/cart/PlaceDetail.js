@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { Modal, View, Image, Text, Button, StyleSheet } from "react-native";
+import { Modal, View, Image, Text, Button, StyleSheet , ScrollView} from "react-native";
+import { Card, CardTitle, CardContent, CardAction, CardButton, CardImage } from 'react-native-cards';
 
 class PlaceDetail  extends Component {
     constructor(props) {
@@ -11,12 +12,34 @@ class PlaceDetail  extends Component {
     printResults = () => {
         if (this.props.selectedPlace) {
             return (
-                <View>
-                    <Image source={this.props.selectedPlace.icon} style={styles.placeImage} />
-                    <Text style={styles.placeName}>{this.props.selectedPlace.name}</Text>
-                    <Text style={styles.placeName}>{this.props.selectedPlace.user_ratings_total}</Text>
-                    <Text style={styles.placeName}>{this.props.selectedPlace.vicinity}</Text>
-                </View>
+                    <ScrollView style={styles.modalContainer}>
+                    
+                    <Card>
+                    <CardImage 
+                        source={{uri: this.props.selectedPlace.icon}} 
+                        title={this.props.selectedPlace.name}
+                    />
+                    <CardTitle
+                        style={styles.placeName}
+                        subtitle="Location Information"
+                    />
+                    <CardContent text={this.props.selectedPlace.name} />
+                    <CardContent text={this.props.selectedPlace.user_ratings_total} />
+                    <CardContent text={this.props.selectedPlace.vicinity} />
+                    <CardContent text={this.props.selectedPlace.rating} />
+                    <CardAction 
+                        separator={true} 
+                        inColumn={false}>
+                        <CardButton
+                            onPress={this.props.onModalClosed}
+                            title="Go Back"
+                            color="indigo"
+                        />
+                    </CardAction>
+                    </Card>
+
+                    </ScrollView>
+    
             );
         }
     }
@@ -31,10 +54,7 @@ class PlaceDetail  extends Component {
                 animationType="slide"
                 >
                     <View style={styles.modalContainer}>
-                    {this.printResults()}
-                        <View>
-                            <Button title="go back" onPress={this.props.onModalClosed} />
-                        </View>
+                        {this.printResults()}
                     </View>
                 </Modal>
         );
@@ -44,16 +64,16 @@ class PlaceDetail  extends Component {
 
 const styles = StyleSheet.create({
   modalContainer: {
-    margin: 22
+    margin: 0,
   },
   placeImage: {
-    width: "100%",
-    height: 200
+    width: "50%",
+    height: "50%"
   },
   placeName: {
     fontWeight: "bold",
     textAlign: "center",
-    fontSize: 28
+    fontSize: 30
   }
 });
 
