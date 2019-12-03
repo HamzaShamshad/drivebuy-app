@@ -124,7 +124,8 @@ class Login extends React.Component {
                 this.setState({
                   errorMsg: json.message,
                 })
-              this.dropDownAlertRef.alertWithType('error', 'Login Failed', this.state.errorMsg);     
+              this.dropDownAlertRef.alertWithType('error', 'Login Failed', this.state.errorMsg);  
+              this.props.loadingAction(false)   
             }
                
         } 
