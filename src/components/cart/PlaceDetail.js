@@ -10,9 +10,10 @@ class PlaceDetail  extends Component {
 
     printResults = () => {
         if (this.props.selectedPlace) {
+            const pic = {uri: this.props.selectedPlace.icon}
             return (
                 <View>
-                    <Image source={this.props.selectedPlace.icon} style={styles.placeImage} />
+                    <Image source={pic} style={styles.placeImage} />
                     <Text style={styles.placeName}>{this.props.selectedPlace.name}</Text>
                     <Text style={styles.placeName}>{this.props.selectedPlace.user_ratings_total}</Text>
                     <Text style={styles.placeName}>{this.props.selectedPlace.vicinity}</Text>
