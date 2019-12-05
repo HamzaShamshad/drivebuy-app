@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {  StyleSheet, View , Text } from "react-native";
+import {  StyleSheet, View , Text  ,Image} from "react-native";
 import MapView, { PROVIDER_GOOGLE , Polyline , Marker} from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import RNGooglePlaces from 'react-native-google-places';
@@ -30,6 +30,7 @@ class Home extends Component {
         },
         availableLocations: null,
         selectedPlace: null,
+        minAngle: null,
       };
     }
 
@@ -37,7 +38,8 @@ class Home extends Component {
       Actions.tags()
     }
     
-
+    // watchID = null;
+    
     componentDidMount = () => {
       Geolocation.getCurrentPosition(
         (position) => {
@@ -51,7 +53,26 @@ class Home extends Component {
         (error) => alert(error.message),
         { enableHighAccuracy: false, timeout: 20000, maximumAge: 2000 }
       );
+
+      // this.watchID = Geolocation.watchPosition( 
+      //   (position) => {
+      //     this.setState({
+      //       currentCoords: {
+      //         latitude:  position.coords.latitude,
+      //         longitude: position.coords.longitude,
+      //       }
+      //     });
+      //     console.log("user moved*********************");
+      //   },
+      //   (error) => alert(error.message),
+      //   { enableHighAccuracy: false, timeout: 20000, maximumAge: 2000 , distanceFilter: 1 }
+      // );
+
     }
+
+    // componentWillUnmount = () => {
+    //   Geolocation.clearWatch(this.watchID);
+    // }
 
     degreesToRadians(degrees){
       return degrees * Math.PI / 180;
@@ -79,6 +100,26 @@ class Home extends Component {
   
       return distance;
     }
+     
+    // Converts from radians to degrees.
+    toDegrees(radians) {
+      return radians * 180 / Math.PI;
+    }
+    
+    
+    bearing(startLat, startLng, destLat, destLng){
+      startLat = this.degreesToRadians(startLat);
+      startLng = this.degreesToRadians(startLng);
+      destLat = this.degreesToRadians(destLat);
+      destLng = this.degreesToRadians(destLng);
+    
+      y = Math.sin(destLng - startLng) * Math.cos(destLat);
+      x = Math.cos(startLat) * Math.sin(destLat) -
+            Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
+      brng = Math.atan2(y, x);
+      brng = this.toDegrees(brng);
+      return (brng + 360) % 360;
+    }
 
     nearByLocations = null;
 
@@ -101,6 +142,8 @@ class Home extends Component {
 
       const radius = 2000; 
       let withInDistance = [];
+      let angle = null;
+      let min = radius;
 
       this.nearByLocations.map((loc) => {
         
@@ -108,12 +151,19 @@ class Home extends Component {
         
         if(distanceInMeters < radius ){
           withInDistance = withInDistance.concat(loc)
+
+          if(distanceInMeters < min)
+          {
+              angle = this.bearing(obj.latitude , obj.longitude , loc.geometry.location.lat ,  loc.geometry.location.lng);
+              min = distanceInMeters;
+          }
         }
       });
 
       this.setState({
         currentCoords: obj,
         availableLocations: withInDistance,
+        minAngle: angle,
       });
 
     }
@@ -187,22 +237,23 @@ class Home extends Component {
                     style={styles.map} 
                     showsCompass={true}
                     showsMyLocationButton={true}
-                    // showsUserLocation = {true}
-                    // onUserLocationChange={event => this.setNewLocation(event.nativeEvent.coordinate)}
+                    showsUserLocation={true}
+                    onUserLocationChange={event => this.setNewLocation(event.nativeEvent.coordinate)}
                     onPress={ (event) => this.setNewLocation(event.nativeEvent.coordinate) }
                     
                     initialRegion={{
-                      latitude: 31.4728123 , //this.props.loc[0].coords.latitude,
-                      longitude:  74.2688898 , //this.props.loc[0].coords.longitude,
+                      latitude: this.props.loc[0].coords.latitude, // 31.4728123
+                      longitude:  this.props.loc[0].coords.longitude, // 74.2688898
                       latitudeDelta: 0.0922,
                       longitudeDelta: 0.0421,
                     }}>
 
                     <Marker
-                        coordinate={{ latitude: this.props.loc[0].coords.latitude , longitude:  this.props.loc[0].coords.latitude}}
-                        title={"I am here"}
-                    />
-                  
+                        coordinate={{latitude: this.state.currentCoords.latitude , longitude: this.state.currentCoords.longitude}}
+                        title={"I am here"} rotation={this.state.minAngle} flat={false} >
+                        {/* rotation={minAngle} flat={false} */}
+                        <Image source={require('../../../assets/main2.jpg')} style={{ width: 15, height: 40 }} />
+                    </Marker>
                     {this.createMarkers(this.state.availableLocations)}
 
                     {/* <Polyline
