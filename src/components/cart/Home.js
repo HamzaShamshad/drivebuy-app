@@ -237,8 +237,8 @@ class Home extends Component {
                     style={styles.map} 
                     showsCompass={true}
                     showsMyLocationButton={true}
-                    showsUserLocation={true}
-                    onUserLocationChange={event => this.setNewLocation(event.nativeEvent.coordinate)}
+                    // showsUserLocation={true}
+                    // onUserLocationChange={event => this.setNewLocation(event.nativeEvent.coordinate)}
                     onPress={ (event) => this.setNewLocation(event.nativeEvent.coordinate) }
                     
                     initialRegion={{
